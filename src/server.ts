@@ -1,25 +1,21 @@
-import express, { Application, Request, Response } from "express";
+import express, { Application } from "express";
+import dotenv from 'dotenv';
+import cors from 'cors';
+
+import router from './routes';
+
+dotenv.config();
 
 const app: Application = express();
-const port = 8080;
+app.set('port', process.env.PORT || 8080);
 
-// Body parsing Middleware
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.get(
-    "/",
-    async (req: Request, res: Response): Promise<Response> => {
-        return res.status(200).send({
-            message: "Hello World!",
-        });
-    }
-);
 
-try {
-    app.listen(port, (): void => {
-        console.log(`Connected successfully on port ${port}`);
-    });
-} catch (error: any) {
-    console.error(`Error occured: ${error.message}`);
-}
+app.use('/api', router);
+
+app.listen(app.get('port'), () => {
+    console.log(`Server is running on port ${app.get('port')}`);
+});
