@@ -6,16 +6,16 @@ import router from './routes';
 
 dotenv.config();
 
-const app: Application = express();
-app.set('port', process.env.PORT || 8080);
+const server: Application = express();
+server.set('port', process.env.PORT || 8080);
 
-app.use(cors());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+server.use(cors());
+server.use(express.json());
+server.use(express.urlencoded({ extended: true }));
 
 
-app.use('/api', router);
+server.use('/api', router);
 
-app.listen(app.get('port'), () => {
-    console.log(`Server is running on port ${app.get('port')}`);
+server.listen(server.get('port'), () => {
+    console.log(`Server is running on port ${server.get('port')}`);
 });
