@@ -15,6 +15,7 @@ import dayjs from 'dayjs';
 const register = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const user = req.body;
+        console.log(user);
         user.password = bcrypt.hashSync(user.password, authConfig.salt);
         user.role = 'USER';
         const result = await prisma.user.create({
