@@ -13,7 +13,7 @@ model User {
   password          String
   name              String?
   role              Role                @default(USER)
-  OauthRefreshToken OauthRefreshToken[]
+  OauthRefreshToken OauthRefreshToken?
 }
 
 model OauthRefreshToken {

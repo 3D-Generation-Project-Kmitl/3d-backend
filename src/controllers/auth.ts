@@ -113,7 +113,7 @@ const getAccessToken = async (req: Request, res: Response, next: NextFunction) =
         }
 
         // Generate new access token from useId
-        const newAccessToken = await authToken.GenerateAccessToken(result.userId);
+        const newAccessToken = authToken.GenerateAccessToken(result.userId);
 
         // Extend refresh token expired time
         await prisma.oauthRefreshToken.update({
@@ -131,4 +131,54 @@ const getAccessToken = async (req: Request, res: Response, next: NextFunction) =
     } catch (error) {
         return next(error);
     }
+}
+
+const updatePassword = async (req: Request, res: Response, next: NextFunction) => {
+    const { userId, oldPassword, newPassword } = req.body;
+    if (oldPassword === newPassword) {
+        return next(new ApplicationError(AuthError.PASSWORD_SHOULD_DIFFERENT));
+    }
+    try {
+        const userResult = await prisma.user.findUnique({
+            where: {
+                id: userId,
+            }
+        });
+        if (!userResult) {
+            return next(new ApplicationError(AuthError.USER_NOT_FOUND))
+        }
+
+        const passwordIsValid = bcrypt.compareSync(
+            oldPassword,
+            userResult.password,
+        );
+
+        if (!passwordIsValid) {
+            return next(new ApplicationError(AuthError.INVALID_PASSWORD))
+        }
+
+        const newPasswordHash = bcrypt.hashSync(newPassword, authConfig.salt);
+
+        await prisma.user.update({
+            where: {
+                id: userResult.id,
+            },
+            data: {
+                password: newPasswordHash
+            }
+        })
+
+        sendResponse(res, { message: 'Update password success' });
+
+    } catch (error) {
+        return next(error);
+    }
+}
+
+export default {
+    register,
+    login,
+    logout,
+    getAccessToken,
+    updatePassword,
 }
