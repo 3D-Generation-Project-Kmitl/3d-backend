@@ -15,13 +15,30 @@ import dayjs from 'dayjs';
 const register = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const user = req.body;
-        console.log(user);
         user.password = bcrypt.hashSync(user.password, authConfig.salt);
         user.role = 'USER';
-        const result = await prisma.user.create({
+        const userResult = await prisma.user.create({
             data: user
         });
-        sendResponse(res, result, 201);
+
+        const accessToken = authToken.GenerateAccessToken(userResult.id);
+        const refreshToken = await authToken.GenerateRefreshToken();
+
+        await prisma.oauthRefreshToken.create({
+            data: {
+                userId: userResult.id,
+                refreshToken: refreshToken,
+                expired_at: dayjs().add(authConfig.jwtRefreshExpiration, 'day').toDate()
+            }
+        });
+
+        // Remove unused password from userResult
+        const { password: unusedPassword, ...userProfile } = userResult;
+
+        res.cookie('accessToken', accessToken, cookieConfig);
+        res.cookie('refreshToken', refreshToken, cookieConfig);
+
+        sendResponse(res, { userProfile }, 200);
     } catch (error) {
         return next(error);
     }
@@ -45,7 +62,7 @@ const login = async (req: Request, res: Response, next: NextFunction) => {
             return next(new ApplicationError(CommonError.UNAUTHORIZED));
         }
 
-        const accessToken = await authToken.GenerateAccessToken(userResult.id);
+        const accessToken = authToken.GenerateAccessToken(userResult.id);
         const refreshToken = await authToken.GenerateRefreshToken();
 
         await prisma.oauthRefreshToken.update({
@@ -54,19 +71,17 @@ const login = async (req: Request, res: Response, next: NextFunction) => {
             },
             data: {
                 refreshToken: refreshToken,
-                expired_at: dayjs().add(authConfig.jwtRefreshExpiration, 'day').toString()
+                expired_at: dayjs().add(authConfig.jwtRefreshExpiration, 'day').toDate()
             }
         });
 
         // Remove unused password from userResult
-
         const { password: unusedPassword, ...userProfile } = userResult;
 
         res.cookie('accessToken', accessToken, cookieConfig);
         res.cookie('refreshToken', refreshToken, cookieConfig);
 
         sendResponse(res, { userProfile }, 200);
-
     } catch (error) {
         return next(error);
     }

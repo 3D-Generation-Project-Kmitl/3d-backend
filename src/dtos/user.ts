@@ -22,3 +22,25 @@ export class RegisterRequestDTO {
     @IsEnum(RoleEnum, { each: true })
     role?: String = undefined;
 }
+
+export class LoginRequestDTO {
+    @IsString()
+    @IsNotEmpty()
+    email: String = '';
+
+    @IsOptional()
+    @IsNotEmpty()
+    @Length(8, 100)
+    password: String = '';
+}
+
+export class UpdatePasswordRequestDTO {
+    @IsString()
+    @IsNotEmpty()
+    oldPassword: String = '';
+
+    @IsString()
+    @Length(8, 100)
+    @IsNotEmpty()
+    newPassword: String = '';
+}

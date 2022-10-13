@@ -8,17 +8,16 @@ datasource db {
 }
 
 model User {
-  id                Int                 @id @default(autoincrement())
-  email             String              @unique
+  id                Int                @id @default(autoincrement())
+  email             String             @unique
   password          String
   name              String?
-  role              Role                @default(USER)
+  role              Role               @default(USER)
   OauthRefreshToken OauthRefreshToken?
 }
 
 model OauthRefreshToken {
-  id           Int       @id @default(autoincrement())
-  userId       Int       @unique
+  userId       Int       @id
   refreshToken String?   @unique
   expired_at   DateTime?
   User         User      @relation(fields: [userId], references: [id])
