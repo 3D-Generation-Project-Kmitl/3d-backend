@@ -67,7 +67,7 @@ export const verifyToken = async (req: Request, res: Response, next: NextFunctio
                     userId: result.userId
                 },
                 data: {
-                    expired_at: dayjs().add(authConfig.jwtRefreshExpiration, 'day').toString()
+                    expired_at: dayjs().add(authConfig.jwtRefreshExpiration, 'day').toDate()
                 }
             });
 
