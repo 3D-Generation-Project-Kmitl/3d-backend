@@ -73,7 +73,7 @@ export const verifyToken = async (req: Request, res: Response, next: NextFunctio
 
             res.cookie('accessToken', newAccessToken, cookieConfig);
 
-            req.body.user.id = result.userId;
+            req.body.user.userId = result.userId;
             return next();
         }
         return next(new ApplicationError(CommonError.UNAUTHORIZED));
@@ -89,7 +89,7 @@ export const permit = (...permittedRoles: String[]) => async (
 
     const userResult = await prisma.user.findUnique({
         where: {
-            id: user.id
+            userId: user.userId
         }
     });
 

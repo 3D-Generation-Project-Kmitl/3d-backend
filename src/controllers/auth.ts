@@ -21,12 +21,12 @@ const register = async (req: Request, res: Response, next: NextFunction) => {
             data: user
         });
 
-        const accessToken = authToken.GenerateAccessToken(userResult.id);
+        const accessToken = authToken.GenerateAccessToken(userResult.userId);
         const refreshToken = await authToken.GenerateRefreshToken();
 
         await prisma.oauthRefreshToken.create({
             data: {
-                userId: userResult.id,
+                userId: userResult.userId,
                 refreshToken: refreshToken,
                 expired_at: dayjs().add(authConfig.jwtRefreshExpiration, 'day').toDate()
             }
@@ -62,12 +62,12 @@ const login = async (req: Request, res: Response, next: NextFunction) => {
             return next(new ApplicationError(CommonError.UNAUTHORIZED));
         }
 
-        const accessToken = authToken.GenerateAccessToken(userResult.id);
+        const accessToken = authToken.GenerateAccessToken(userResult.userId);
         const refreshToken = await authToken.GenerateRefreshToken();
 
         await prisma.oauthRefreshToken.update({
             where: {
-                userId: userResult.id
+                userId: userResult.userId
             },
             data: {
                 refreshToken: refreshToken,
@@ -92,7 +92,7 @@ const logout = async (req: Request, res: Response, next: NextFunction) => {
         const { user } = req.body;
         await prisma.oauthRefreshToken.update({
             where: {
-                userId: user.id
+                userId: user.userId
             },
             data: {
                 refreshToken: null,
@@ -157,7 +157,7 @@ const updatePassword = async (req: Request, res: Response, next: NextFunction) =
     try {
         const userResult = await prisma.user.findUnique({
             where: {
-                id: userId,
+                userId: userId,
             }
         });
         if (!userResult) {
@@ -177,7 +177,7 @@ const updatePassword = async (req: Request, res: Response, next: NextFunction) =
 
         await prisma.user.update({
             where: {
-                id: userResult.id,
+                userId: userResult.userId,
             },
             data: {
                 password: newPasswordHash
