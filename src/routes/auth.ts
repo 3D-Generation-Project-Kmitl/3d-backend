@@ -1,5 +1,5 @@
 import { authController } from '../controllers';
-import { verifyToken, permit } from '../middleware/auth';
+import { verifyToken } from '../middleware/auth';
 import { validateRequest } from '../middleware/validation';
 import { RegisterRequestDTO, LoginRequestDTO, UpdatePasswordRequestDTO } from '../dtos/user';
 import { Router } from 'express';

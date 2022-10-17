@@ -15,7 +15,7 @@ export class RegisterRequestDTO {
 
     @IsOptional()
     @IsNotEmpty()
-    @Length(1, 100)
+    @Length(1, 50)
     name: String = '';
 
     @IsOptional()

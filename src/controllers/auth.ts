@@ -17,6 +17,7 @@ const register = async (req: Request, res: Response, next: NextFunction) => {
         const user = req.body;
         user.password = bcrypt.hashSync(user.password, authConfig.salt);
         user.role = 'USER';
+        user.isVerified = false;
         const userResult = await prisma.user.create({
             data: user
         });
