@@ -34,7 +34,7 @@ export const verifyToken = async (req: Request, res: Response, next: NextFunctio
 
     try {
         const decoded = jwt.verify(token, authConfig.secret) as JwtPayload;
-        req.body.userId = decoded.id;
+        req.body.user.userId = decoded.id;
         next();
     }
     catch (error) {
@@ -77,7 +77,7 @@ export const verifyToken = async (req: Request, res: Response, next: NextFunctio
 
             res.cookie('accessToken', newAccessToken, cookieConfig);
 
-            req.body.userId = result.userId;
+            req.body.user.userId = result.userId;
             return next();
         }
         return next(new ApplicationError(CommonError.UNAUTHORIZED));

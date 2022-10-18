@@ -90,7 +90,7 @@ const login = async (req: Request, res: Response, next: NextFunction) => {
 
 const logout = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const userId = req.body.userId;
+        const userId = req.body.user.userId;
         await prisma.oauthRefreshToken.update({
             where: {
                 userId: userId
@@ -151,7 +151,8 @@ const getAccessToken = async (req: Request, res: Response, next: NextFunction) =
 }
 
 const updatePassword = async (req: Request, res: Response, next: NextFunction) => {
-    const { userId, oldPassword, newPassword } = req.body;
+    const { user, oldPassword, newPassword } = req.body;
+    const userId = user.id;
     if (oldPassword === newPassword) {
         return next(new ApplicationError(AuthError.PASSWORD_SHOULD_DIFFERENT));
     }

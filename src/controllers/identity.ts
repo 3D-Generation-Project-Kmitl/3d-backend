@@ -21,7 +21,7 @@ const create = async (req: Request, res: Response, next: NextFunction) => {
 
 const get = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const userId = req.body.userId;
+        const userId = req.body.user.userId;
         const identityResult = await prisma.identity.findUnique({
             where: {
                 userId: userId
@@ -35,7 +35,7 @@ const get = async (req: Request, res: Response, next: NextFunction) => {
 
 const update = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const userId = req.body.userId;
+        const userId = req.body.user.userId;
         const identity = req.body;
 
         const identityResult = await prisma.identity.update({
@@ -53,7 +53,7 @@ const update = async (req: Request, res: Response, next: NextFunction) => {
 
 const adminUpdate = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const userId = req.body.userId;
+        const userId = req.body.user.userId;
         const { status, issue } = req.body;
 
         const identityResult = await prisma.identity.update({
