@@ -38,18 +38,18 @@ model OauthRefreshToken {
 }
 
 model Identity {
-  userId          Int      @id
-  firstName       String   @db.VarChar(50)
-  lastName        String   @db.VarChar(50)
-  phone           String   @db.VarChar(20)
-  idCardNumber    String   @db.VarChar(20)
-  cardPicture     String   @db.VarChar(100)
-  cardFacePicture String   @db.VarChar(100)
-  status          String   @db.VarChar(20)
-  issue           String   @db.VarChar(100)
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-  User            User     @relation(fields: [userId], references: [userId])
+  userId          Int            @id
+  firstName       String         @db.VarChar(50)
+  lastName        String         @db.VarChar(50)
+  phone           String         @db.VarChar(20)
+  idCardNumber    String         @db.VarChar(20)
+  cardPicture     String         @db.VarChar(100)
+  cardFacePicture String         @db.VarChar(100)
+  status          IdentityStatus @default(PENDING)
+  issue           String?        @db.VarChar(100)
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+  User            User           @relation(fields: [userId], references: [userId])
 }
 
 model Category {
@@ -207,4 +207,10 @@ enum ProductStatus {
 enum WalletTransactionType {
   DEPOSIT
   WITHDRAW
+}
+
+enum IdentityStatus {
+  PENDING
+  APPROVED
+  REJECTED
 }

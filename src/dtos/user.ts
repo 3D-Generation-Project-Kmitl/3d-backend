@@ -15,8 +15,12 @@ export class RegisterRequestDTO {
 
     @IsOptional()
     @IsNotEmpty()
-    @Length(1, 100)
+    @Length(1, 50)
     name: String = '';
+
+    @IsOptional()
+    @IsString()
+    gAuthCode?: String = undefined;
 
     @IsOptional()
     @IsEnum(RoleEnum, { each: true })
@@ -43,4 +47,26 @@ export class UpdatePasswordRequestDTO {
     @Length(8, 100)
     @IsNotEmpty()
     newPassword: String = '';
+}
+
+export class UpdateUserRequestDTO {
+    @IsOptional()
+    @Length(1, 50)
+    name: String = '';
+
+    @IsOptional()
+    @IsEnum(RoleEnum, { each: true })
+    role?: String = undefined;
+
+    @IsOptional()
+    @IsString()
+    picture?: String = undefined;
+
+    @IsOptional()
+    @IsString()
+    gender?: String = undefined;
+
+    @IsOptional()
+    @IsDate()
+    dateOfBirth?: Date = undefined;
 }
