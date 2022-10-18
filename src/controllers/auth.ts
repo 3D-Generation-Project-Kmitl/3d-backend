@@ -90,10 +90,10 @@ const login = async (req: Request, res: Response, next: NextFunction) => {
 
 const logout = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const { user } = req.body;
+        const userId = req.body.userId;
         await prisma.oauthRefreshToken.update({
             where: {
-                userId: user.userId
+                userId: userId
             },
             data: {
                 refreshToken: null,
@@ -138,7 +138,7 @@ const getAccessToken = async (req: Request, res: Response, next: NextFunction) =
                 userId: result.userId
             },
             data: {
-                expired_at: dayjs().add(authConfig.jwtRefreshExpiration, 'day').toString()
+                expired_at: dayjs().add(authConfig.jwtRefreshExpiration, 'day').toDate()
             }
         });
 
