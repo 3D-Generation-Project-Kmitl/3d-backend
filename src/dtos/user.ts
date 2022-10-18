@@ -3,19 +3,6 @@ import {
 } from 'class-validator';
 import { RoleEnum } from '../constants/user';
 
-// "userId": 1,
-//             "email": "pure@gmail.com",
-//             "name": "pure",
-//             "password": "$2a$10$XPtakPihgUrvjhXYtvJW3.UtV4ysyjRJ764eGSezVd3kswQOSAKO.",
-//             "gAuthCode": null,
-//             "picture": null,
-//             "gender": null,
-//             "dateOfBirth": null,
-//             "isVerified": false,
-//             "role": "USER",
-//             "createdAt": "2022-10-17T10:53:07.938Z",
-//             "updatedAt": "2022-10-17T11:55:15.389Z"
-
 export class RegisterRequestDTO {
     @IsString()
     @IsNotEmpty()

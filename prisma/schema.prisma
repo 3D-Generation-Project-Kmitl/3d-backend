@@ -46,7 +46,7 @@ model Identity {
   cardPicture     String         @db.VarChar(100)
   cardFacePicture String         @db.VarChar(100)
   status          IdentityStatus @default(PENDING)
-  issue           String         @db.VarChar(100)
+  issue           String?        @db.VarChar(100)
   createdAt       DateTime       @default(now())
   updatedAt       DateTime       @updatedAt
   User            User           @relation(fields: [userId], references: [userId])
