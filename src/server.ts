@@ -6,7 +6,16 @@ import router from './routes';
 
 dotenv.config();
 
+declare global {
+    namespace Express {
+        interface Request {
+            userId: number
+        }
+    }
+}
+
 const server: Application = express();
+
 server.set('port', process.env.PORT || 8080);
 
 server.use(express.json());

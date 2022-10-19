@@ -22,6 +22,7 @@ model User {
   updatedAt         DateTime           @updatedAt
   OauthRefreshToken OauthRefreshToken?
   Identity          Identity?
+  Product           Product[]
   Like              Like[]
   Cart              Cart[]
   Order             Order[]
@@ -73,6 +74,7 @@ model ProductCategory {
 
 model Product {
   productId       Int               @id @default(autoincrement())
+  userId          Int
   name            String            @db.VarChar(50)
   details         String?           @db.VarChar(500)
   price           Float
@@ -81,6 +83,7 @@ model Product {
   status          ProductStatus     @default(AVAILABLE)
   createdAt       DateTime          @default(now())
   updatedAt       DateTime          @updatedAt
+  User            User              @relation(fields: [userId], references: [userId])
   ProductCategory ProductCategory[]
   Like            Like[]
   Cart            Cart[]

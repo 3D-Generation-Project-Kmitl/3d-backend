@@ -15,7 +15,7 @@ import prisma from '../utils/prisma';
 const { TokenExpiredError } = jwt;
 
 interface JwtPayload {
-    id: Number;
+    id: number;
 }
 
 export const verifyToken = async (req: Request, res: Response, next: NextFunction) => {
@@ -34,7 +34,7 @@ export const verifyToken = async (req: Request, res: Response, next: NextFunctio
 
     try {
         const decoded = jwt.verify(token, authConfig.secret) as JwtPayload;
-        req.body.user.userId = decoded.id;
+        req.userId = decoded.id;
         next();
     }
     catch (error) {
@@ -77,7 +77,7 @@ export const verifyToken = async (req: Request, res: Response, next: NextFunctio
 
             res.cookie('accessToken', newAccessToken, cookieConfig);
 
-            req.body.user.userId = result.userId;
+            req.userId = result.userId;
             return next();
         }
         return next(new ApplicationError(CommonError.UNAUTHORIZED));
@@ -89,7 +89,7 @@ export const permit = (...permittedRoles: String[]) => async (
     req: Request, res: Response, next: NextFunction,
 ) => {
 
-    const userId = req.body.userId;
+    const userId = req.userId;
 
     const userResult = await prisma.user.findUnique({
         where: {
