@@ -4,6 +4,9 @@
 # migrations
 */migrations/*
 
+#uploads
+/uploads
+
 # dependencies
 /node_modules
 /.pnp

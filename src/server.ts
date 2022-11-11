@@ -21,6 +21,7 @@ server.set('port', process.env.PORT || 8080);
 server.use(express.json());
 server.use(cookieParser());
 server.use(express.urlencoded({ extended: true }));
+server.use('/uploads', express.static('uploads'));
 
 server.use(cors({
     origin: true,

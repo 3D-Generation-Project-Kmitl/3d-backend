@@ -25,6 +25,13 @@ const getProducts = async (req: Request, res: Response, next: NextFunction) => {
             {
                 orderBy: {
                     productId: 'desc'
+                },
+                include: {
+                    Model: {
+                        select: {
+                            picture: true
+                        }
+                    }
                 }
             }
         );
@@ -40,6 +47,14 @@ const getProduct = async (req: Request, res: Response, next: NextFunction) => {
         const product = await prisma.product.findUnique({
             where: {
                 productId: id
+            },
+            include: {
+                Model: {
+                    select: {
+                        model: true,
+                        picture: true
+                    }
+                }
             }
         });
         if (!product) {

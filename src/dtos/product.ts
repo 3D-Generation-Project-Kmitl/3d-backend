@@ -2,11 +2,8 @@ import {
     IsNotEmpty, IsString, IsNumber, MaxLength, Length, IsEnum
 } from 'class-validator';
 
-export class CreateProductRequestDTO {
-    @IsNotEmpty()
-    @IsNumber()
-    userId: number;
 
+export class CreateProductRequestDTO {
     @IsNotEmpty()
     @IsNumber()
     categoryId: number;
@@ -25,21 +22,11 @@ export class CreateProductRequestDTO {
     price: number;
 
     @IsNotEmpty()
-    @IsString()
-    @Length(1, 100)
-    picture: string;
-
-    @IsNotEmpty()
-    @IsString()
-    @Length(1, 100)
-    model: string;
+    @IsNumber()
+    modelId: number;
 }
 
 export class UpdateProductRequestDTO {
-    @IsNotEmpty()
-    @IsNumber()
-    userId: number;
-
     @IsNotEmpty()
     @IsNumber()
     categoryId: number;
@@ -58,12 +45,6 @@ export class UpdateProductRequestDTO {
     price: number;
 
     @IsNotEmpty()
-    @IsString()
-    @Length(1, 100)
-    picture: string = '';
-
-    @IsNotEmpty()
-    @IsString()
-    @Length(1, 100)
-    model: string = '';
+    @IsNumber()
+    modelId: number;
 }
