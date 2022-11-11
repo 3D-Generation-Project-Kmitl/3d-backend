@@ -6,78 +6,78 @@ import { StatusEnum } from '../constants/user';
 export class CreateIdentityRequestDTO {
     @IsNumber()
     @IsNotEmpty()
-    userId: number = -1;
+    userId: number;
 
     @IsString()
     @IsNotEmpty()
     @Length(1, 50)
-    firstName: string = '';
+    firstName: string;
 
     @IsString()
     @IsNotEmpty()
     @Length(1, 50)
-    lastName: string = '';
+    lastName: string;
 
     @IsString()
     @IsNotEmpty()
     @Length(10, 10)
-    phone: string = '';
+    phone: string;
 
     @IsString()
     @IsNotEmpty()
     @Length(13, 13)
-    idCardNumber: string = '';
+    idCardNumber: string;
 
     @IsString()
     @IsNotEmpty()
     @MaxLength(100)
-    cardPicture: string = '';
+    cardPicture: string;
 
     @IsString()
     @IsNotEmpty()
     @MaxLength(100)
-    cardFacePicture: string = '';
+    cardFacePicture: string;
 
     @IsString()
     @IsNotEmpty()
     @MaxLength(20)
-    status: string = '';
+    status: string;
 }
 
 export class UpdateIdentityRequestDTO {
     @IsNumber()
     @IsNotEmpty()
-    userId: number = -1;
+    userId: number;
 
     @IsString()
     @IsNotEmpty()
     @Length(1, 50)
-    firstName: string = '';
+    firstName: string;
 
     @IsString()
     @IsNotEmpty()
     @Length(1, 50)
-    lastName: string = '';
+    lastName: string;
 
     @IsString()
     @IsNotEmpty()
     @Length(10, 10)
-    phone: string = '';
+    phone: string;
 
     @IsString()
     @IsNotEmpty()
     @Length(13, 13)
-    idCardNumber: string = '';
+    idCardNumber: string;
 
     @IsString()
     @IsNotEmpty()
     @MaxLength(100)
-    cardPicture: string = '';
+    cardPicture: string;
 
     @IsString()
     @IsNotEmpty()
     @MaxLength(100)
-    cardFacePicture: string = '';
+    cardFacePicture: string;
 }
 
 export class AdminUpdateIdentityRequestDTO {
@@ -85,10 +85,10 @@ export class AdminUpdateIdentityRequestDTO {
     @IsNotEmpty()
     @MaxLength(100)
     @IsEnum(StatusEnum, { each: true })
-    status: string = '';
+    status: string;
 
     @IsString()
     @IsNotEmpty()
     @MaxLength(100)
-    issue: string = '';
+    issue: string;
 }

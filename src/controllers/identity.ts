@@ -13,7 +13,7 @@ const create = async (req: Request, res: Response, next: NextFunction) => {
             data: identity
         });
 
-        sendResponse(res, { identityResult }, 200);
+        sendResponse(res, identityResult, 200);
     } catch (error) {
         return next(error);
     }
@@ -27,7 +27,7 @@ const get = async (req: Request, res: Response, next: NextFunction) => {
                 userId: userId
             }
         });
-        sendResponse(res, { identityResult }, 200);
+        sendResponse(res, identityResult, 200);
     } catch (error) {
         return next(error);
     }
@@ -45,7 +45,7 @@ const update = async (req: Request, res: Response, next: NextFunction) => {
             data: identity
         });
 
-        sendResponse(res, { identityResult }, 200);
+        sendResponse(res, identityResult, 200);
     } catch (error) {
         return next(error);
     }
@@ -76,7 +76,7 @@ const adminUpdate = async (req: Request, res: Response, next: NextFunction) => {
             });
         }
 
-        sendResponse(res, { identityResult }, 200);
+        sendResponse(res, identityResult, 200);
     } catch (error) {
         return next(error);
     }

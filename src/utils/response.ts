@@ -1,10 +1,11 @@
+import { PrismaClient } from "@prisma/client";
 import { Response } from "express";
 
-export function formatResponse(result: any, override = {}) {
+export function formatResponse(result: any) {
     return {
         data: result,
         success: true,
-        ...override,
+        message: "",
     };
 }
 

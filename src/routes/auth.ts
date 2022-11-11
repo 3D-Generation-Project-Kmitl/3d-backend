@@ -11,5 +11,5 @@ router.post('/login', [validateRequest(LoginRequestDTO)], authController.login)
 router.post('/logout', [verifyToken], authController.logout)
 router.post('/getAccessToken', authController.getAccessToken);
 router.put('/updatePassword', [verifyToken, validateRequest(UpdatePasswordRequestDTO)], authController.updatePassword);
-
+router.post('/validateToken', authController.validateToken);
 export default router;
