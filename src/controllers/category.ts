@@ -8,9 +8,16 @@ import { Request, Response, NextFunction } from 'express';
 const create = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const category = req.body;
+        const picture = req.file?.path;
+        if (!picture) {
+            throw new ApplicationError(CommonError.INVALID_REQUEST);
+        }
 
         const categoryResult = await prisma.category.create({
-            data: category
+            data: {
+                ...category,
+                picture: picture
+            }
         });
 
         sendResponse(res, categoryResult, 200);
@@ -32,11 +39,16 @@ const update = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const id = Number(req.params.id);
         const category = req.body;
+        const picture = req.file?.path;
+
         const categoryResult = await prisma.category.update({
             where: {
                 categoryId: id
             },
-            data: category
+            data: {
+                ...category,
+                picture: picture
+            }
         });
         sendResponse(res, categoryResult, 200);
     } catch (error) {

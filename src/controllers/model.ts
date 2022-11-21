@@ -33,14 +33,56 @@ const getByUserId = async (req: Request, res: Response, next: NextFunction) => {
         const userId = req.userId;
         const modelResult = await prisma.model.findMany({
             where: {
-                userId: userId
+                userId: userId,
+                // NOT: {
+                //     Product: null
+                // }
             }
-        });
+        },
+
+        );
         sendResponse(res, modelResult, 200);
     } catch (error) {
         return next(error);
     }
 }
+
+const update = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const userId = req.userId;
+        const modelId = Number(req.params.id);
+
+        const modelResult = await prisma.model.findUnique({
+            where: {
+                modelId: modelId
+            }
+        });
+
+        if (!modelResult) {
+            throw new ApplicationError(CommonError.RESOURCE_NOT_FOUND);
+        }
+
+        if (modelResult.userId !== userId) {
+            throw new ApplicationError(CommonError.UNAUTHORIZED);
+        }
+
+        const picture = req.file?.path;
+
+        const updateResult = await prisma.model.update({
+            where: {
+                modelId: modelId
+            },
+            data: {
+                picture: picture
+            }
+        });
+
+        sendResponse(res, updateResult, 200);
+    } catch (error) {
+        return next(error);
+    }
+}
+
 
 const remove = async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -59,6 +101,7 @@ const remove = async (req: Request, res: Response, next: NextFunction) => {
 export default {
     create,
     getByUserId,
+    update,
     remove
 }
 

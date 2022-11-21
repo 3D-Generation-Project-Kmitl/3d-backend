@@ -57,6 +57,7 @@ model Identity {
 model Category {
   categoryId Int       @id @default(autoincrement())
   name       String    @unique @db.VarChar(50)
+  picture    String    @db.VarChar(100)
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @updatedAt
   Product    Product[]
@@ -188,14 +189,15 @@ model ReportProduct {
 }
 
 model Model {
-  modelId   Int       @id @default(autoincrement())
+  modelId   Int         @id @default(autoincrement())
   userId    Int
   model     String
   picture   String?
+  status    ModelStatus @default(AVAILABLE)
   type      ModelType
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  User      User      @relation(fields: [userId], references: [userId])
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+  User      User        @relation(fields: [userId], references: [userId])
   Product   Product?
 }
 
@@ -208,6 +210,7 @@ enum ProductStatus {
   AVAILABLE
   UNAVAILABLE
   VIOLATION
+  DELETED
 }
 
 enum WalletTransactionType {
@@ -225,4 +228,9 @@ enum ModelType {
   ADD
   CREATE
   BUY
+}
+
+enum ModelStatus {
+  AVAILABLE
+  DELETED
 }
