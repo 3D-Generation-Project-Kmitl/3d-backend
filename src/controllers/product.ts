@@ -27,11 +27,12 @@ const getProducts = async (req: Request, res: Response, next: NextFunction) => {
                     productId: 'desc'
                 },
                 include: {
-                    Model: {
-                        select: {
-                            picture: true
-                        }
-                    }
+                    Model: true
+                    // Model: {
+                    //     select: {
+                    //         picture: true
+                    //     }
+                    // }
                 }
             }
         );
@@ -71,7 +72,15 @@ const update = async (req: Request, res: Response, next: NextFunction) => {
         const userId = Number(req.userId);
         const id = Number(req.params.id);
         const product = req.body
-        if (userId !== product.userId) {
+        const productResult = await prisma.product.findUnique({
+            where: {
+                productId: id
+            }
+        });
+        if (!productResult) {
+            throw new ApplicationError(CommonError.RESOURCE_NOT_FOUND);
+        }
+        if (userId !== productResult.userId) {
             throw new ApplicationError(CommonError.UNAUTHORIZED);
         }
         const updatedProduct = await prisma.product.update({

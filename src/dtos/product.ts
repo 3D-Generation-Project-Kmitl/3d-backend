@@ -1,5 +1,5 @@
 import {
-    IsNotEmpty, IsString, IsNumber, MaxLength, Length, IsEnum
+    IsNotEmpty, IsString, IsNumber, MaxLength, Length, IsEnum, IsOptional
 } from 'class-validator';
 
 
@@ -27,24 +27,25 @@ export class CreateProductRequestDTO {
 }
 
 export class UpdateProductRequestDTO {
-    @IsNotEmpty()
     @IsNumber()
+    @IsOptional()
     categoryId: number;
 
-    @IsNotEmpty()
     @IsString()
     @MaxLength(50)
+    @IsOptional()
     name: string = '';
 
     @IsString()
     @MaxLength(500)
+    @IsOptional()
     details?: string = '';
 
-    @IsNotEmpty()
     @IsNumber()
+    @IsOptional()
     price: number;
 
-    @IsNotEmpty()
     @IsNumber()
-    modelId: number;
+    @IsOptional()
+    modelId?: number;
 }
