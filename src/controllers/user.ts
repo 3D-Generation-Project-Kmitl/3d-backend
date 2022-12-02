@@ -7,7 +7,7 @@ import prisma from '../utils/prisma';
 const getUsers = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const users = await prisma.user.findMany();
-        sendResponse(res, { users }, 200);
+        sendResponse(res, users, 200);
     } catch (error: any) {
         return next(error);
     }
@@ -21,7 +21,7 @@ const getUser = async (req: Request, res: Response, next: NextFunction) => {
                 userId: id
             }
         });
-        sendResponse(res, { user }, 200);
+        sendResponse(res, user, 200);
     } catch (error: any) {
         return next(error);
     }
@@ -30,7 +30,7 @@ const getUser = async (req: Request, res: Response, next: NextFunction) => {
 const update = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const id = Number(req.params.id);
-        const userId = Number(req.body.userId);
+        const userId = Number(req.userId);
         if (id !== userId) {
             return next(new ApplicationError(CommonError.UNAUTHORIZED));
         }
@@ -41,7 +41,7 @@ const update = async (req: Request, res: Response, next: NextFunction) => {
             },
             data: user
         });
-        sendResponse(res, { updatedUser }, 200);
+        sendResponse(res, updatedUser, 200);
     } catch (error: any) {
         return next(error);
     }
@@ -50,7 +50,7 @@ const update = async (req: Request, res: Response, next: NextFunction) => {
 const remove = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const id = Number(req.params.id);
-        const userId = Number(req.body.userId);
+        const userId = Number(req.userId);
         if (id !== userId) {
             return next(new ApplicationError(CommonError.UNAUTHORIZED));
         }
@@ -59,7 +59,7 @@ const remove = async (req: Request, res: Response, next: NextFunction) => {
                 userId: userId
             }
         });
-        sendResponse(res, { user }, 200);
+        sendResponse(res, user, 200);
     } catch (error: any) {
         return next(error);
     }

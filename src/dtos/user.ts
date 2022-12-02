@@ -6,17 +6,17 @@ import { RoleEnum } from '../constants/user';
 export class RegisterRequestDTO {
     @IsString()
     @IsNotEmpty()
-    email: String = '';
+    email: String;
 
     @IsOptional()
     @IsNotEmpty()
     @Length(8, 100)
-    password: String = '';
+    password: String;
 
     @IsOptional()
     @IsNotEmpty()
     @Length(1, 50)
-    name: String = '';
+    name: String;
 
     @IsOptional()
     @IsString()
@@ -30,29 +30,29 @@ export class RegisterRequestDTO {
 export class LoginRequestDTO {
     @IsString()
     @IsNotEmpty()
-    email: String = '';
+    email: String;
 
     @IsOptional()
     @IsNotEmpty()
     @Length(8, 100)
-    password: String = '';
+    password: String;
 }
 
 export class UpdatePasswordRequestDTO {
     @IsString()
     @IsNotEmpty()
-    oldPassword: String = '';
+    oldPassword: String;
 
     @IsString()
     @Length(8, 100)
     @IsNotEmpty()
-    newPassword: String = '';
+    newPassword: String;
 }
 
 export class UpdateUserRequestDTO {
     @IsOptional()
     @Length(1, 50)
-    name: String = '';
+    name: String;
 
     @IsOptional()
     @IsEnum(RoleEnum, { each: true })

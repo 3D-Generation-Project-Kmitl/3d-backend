@@ -12,6 +12,62 @@ import { Request, Response, NextFunction } from 'express';
 import bcrypt from 'bcryptjs';
 import dayjs from 'dayjs';
 
+
+const validateToken = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { refreshToken } = req.cookies;
+        if (refreshToken == null) {
+            return next(new ApplicationError(AuthError.REFRESH_TOKEN_IS_REQUIRED));
+        }
+
+        const result = await prisma.oauthRefreshToken.findFirst({
+            where: {
+                refreshToken: refreshToken
+            }
+        });
+
+        if (!result) {
+            return next(new ApplicationError(AuthError.REFRESH_TOKEN_NOT_FOUND));
+        }
+
+        if (isExpired(result.expired_at)) {
+            return next(new ApplicationError(AuthError.REFRESH_TOKEN_IS_EXPIRED));
+        }
+
+        // Generate new access token from useId
+        const newAccessToken = authToken.GenerateAccessToken(result.userId);
+
+        // Extend refresh token expired time
+        await prisma.oauthRefreshToken.update({
+            where: {
+                userId: result.userId
+            },
+            data: {
+                expired_at: dayjs().add(authConfig.jwtRefreshExpiration, 'day').toDate()
+            }
+        });
+
+        const userResult = await prisma.user.findUnique({
+            where: {
+                userId: result.userId
+            }
+        });
+
+        if (!userResult) {
+            return next(new ApplicationError(CommonError.UNAUTHORIZED));
+        }
+
+        const { password: unusedPassword, ...userProfile } = userResult;
+
+        res.cookie('accessToken', newAccessToken, cookieConfig);
+        sendResponse(res, userProfile, 200);
+
+    } catch (error) {
+        return next(error);
+    }
+}
+
+
 const register = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const user = req.body;
@@ -39,7 +95,7 @@ const register = async (req: Request, res: Response, next: NextFunction) => {
         res.cookie('accessToken', accessToken, cookieConfig);
         res.cookie('refreshToken', refreshToken, cookieConfig);
 
-        sendResponse(res, { userProfile }, 200);
+        sendResponse(res, userProfile, 200);
     } catch (error) {
         return next(error);
     }
@@ -82,7 +138,7 @@ const login = async (req: Request, res: Response, next: NextFunction) => {
         res.cookie('accessToken', accessToken, cookieConfig);
         res.cookie('refreshToken', refreshToken, cookieConfig);
 
-        sendResponse(res, { userProfile }, 200);
+        sendResponse(res, userProfile, 200);
     } catch (error) {
         return next(error);
     }
@@ -90,7 +146,7 @@ const login = async (req: Request, res: Response, next: NextFunction) => {
 
 const logout = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const userId = req.body.userId;
+        const userId = req.userId;
         await prisma.oauthRefreshToken.update({
             where: {
                 userId: userId
@@ -102,7 +158,7 @@ const logout = async (req: Request, res: Response, next: NextFunction) => {
         });
         res.clearCookie('accessToken');
         res.clearCookie('refreshToken');
-        sendResponse(res, { message: 'Logout success' }, 204);
+        sendResponse(res, { message: 'Logout success' }, 200);
     } catch (error) {
         return next(error);
     }
@@ -151,7 +207,8 @@ const getAccessToken = async (req: Request, res: Response, next: NextFunction) =
 }
 
 const updatePassword = async (req: Request, res: Response, next: NextFunction) => {
-    const { userId, oldPassword, newPassword } = req.body;
+    const { oldPassword, newPassword } = req.body;
+    const userId = req.userId;
     if (oldPassword === newPassword) {
         return next(new ApplicationError(AuthError.PASSWORD_SHOULD_DIFFERENT));
     }
@@ -198,4 +255,5 @@ export default {
     logout,
     getAccessToken,
     updatePassword,
+    validateToken,
 }

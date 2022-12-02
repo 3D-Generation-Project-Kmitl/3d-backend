@@ -62,6 +62,12 @@ const CommonError = {
         message: 'Gateway timeout',
         statusCode: 504,
     },
+    INVALID_REQUEST: {
+        type: ApplicationError.errorType.NETWORK,
+        code: 'INVALID_REQUEST',
+        message: 'Invalid request',
+        statusCode: 400,
+    }
 };
 
 export { CommonError };

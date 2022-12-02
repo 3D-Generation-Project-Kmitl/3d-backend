@@ -22,12 +22,14 @@ model User {
   updatedAt         DateTime           @updatedAt
   OauthRefreshToken OauthRefreshToken?
   Identity          Identity?
+  Product           Product[]
   Like              Like[]
   Cart              Cart[]
   Order             Order[]
   Wallet            Wallet?
   Notification      Notification[]
   ReportProduct     ReportProduct[]
+  Model             Model[]
 }
 
 model OauthRefreshToken {
@@ -53,39 +55,32 @@ model Identity {
 }
 
 model Category {
-  categoryId      Int               @id @default(autoincrement())
-  name            String            @unique @db.VarChar(50)
-  createdAt       DateTime          @default(now())
-  updatedAt       DateTime          @updatedAt
-  ProductCategory ProductCategory[]
-}
-
-model ProductCategory {
-  categoryId Int
-  productId  Int
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-  Category   Category @relation(fields: [categoryId], references: [categoryId])
-  Product    Product  @relation(fields: [productId], references: [productId])
-
-  @@id([categoryId, productId])
+  categoryId Int       @id @default(autoincrement())
+  name       String    @unique @db.VarChar(50)
+  picture    String    @db.VarChar(100)
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  Product    Product[]
 }
 
 model Product {
-  productId       Int               @id @default(autoincrement())
-  name            String            @db.VarChar(50)
-  details         String?           @db.VarChar(500)
-  price           Float
-  picture         String            @db.VarChar(100)
-  model           String            @db.VarChar(100)
-  status          ProductStatus     @default(AVAILABLE)
-  createdAt       DateTime          @default(now())
-  updatedAt       DateTime          @updatedAt
-  ProductCategory ProductCategory[]
-  Like            Like[]
-  Cart            Cart[]
-  OrderProduct    OrderProduct[]
-  ReportProduct   ReportProduct[]
+  productId     Int             @id @default(autoincrement())
+  userId        Int
+  modelId       Int             @unique
+  categoryId    Int
+  name          String          @db.VarChar(50)
+  details       String?         @db.VarChar(500)
+  price         Float
+  status        ProductStatus   @default(AVAILABLE)
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  User          User            @relation(fields: [userId], references: [userId])
+  Category      Category        @relation(fields: [categoryId], references: [categoryId])
+  Model         Model           @relation(fields: [modelId], references: [modelId])
+  Like          Like[]
+  Cart          Cart[]
+  OrderProduct  OrderProduct[]
+  ReportProduct ReportProduct[]
 }
 
 model Like {
@@ -193,6 +188,19 @@ model ReportProduct {
   @@id([userId, productId])
 }
 
+model Model {
+  modelId   Int         @id @default(autoincrement())
+  userId    Int
+  model     String
+  picture   String?
+  status    ModelStatus @default(AVAILABLE)
+  type      ModelType
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+  User      User        @relation(fields: [userId], references: [userId])
+  Product   Product?
+}
+
 enum Role {
   USER
   ADMIN
@@ -202,6 +210,7 @@ enum ProductStatus {
   AVAILABLE
   UNAVAILABLE
   VIOLATION
+  DELETED
 }
 
 enum WalletTransactionType {
@@ -213,4 +222,15 @@ enum IdentityStatus {
   PENDING
   APPROVED
   REJECTED
+}
+
+enum ModelType {
+  ADD
+  CREATE
+  BUY
+}
+
+enum ModelStatus {
+  AVAILABLE
+  DELETED
 }
