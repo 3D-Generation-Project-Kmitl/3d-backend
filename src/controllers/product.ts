@@ -28,11 +28,6 @@ const getProducts = async (req: Request, res: Response, next: NextFunction) => {
                 },
                 include: {
                     Model: true
-                    // Model: {
-                    //     select: {
-                    //         picture: true
-                    //     }
-                    // }
                 }
             }
         );
@@ -50,12 +45,8 @@ const getProduct = async (req: Request, res: Response, next: NextFunction) => {
                 productId: id
             },
             include: {
-                Model: {
-                    select: {
-                        model: true,
-                        picture: true
-                    }
-                }
+                Model: true,
+                User: true
             }
         });
         if (!product) {

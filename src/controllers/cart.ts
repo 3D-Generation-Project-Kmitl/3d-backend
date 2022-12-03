@@ -13,6 +13,13 @@ const create = async (req: Request, res: Response, next: NextFunction) => {
             data: {
                 userId,
                 productId
+            },
+            include: {
+                Product: {
+                    include: {
+                        Model: true
+                    }
+                }
             }
         });
         sendResponse(res, cart, 201);
@@ -28,8 +35,15 @@ const get = async (req: Request, res: Response, next: NextFunction) => {
             where: {
                 userId
             },
+            orderBy: {
+                updatedAt: 'desc'
+            },
             include: {
-                Product: true
+                Product: {
+                    include: {
+                        Model: true
+                    }
+                }
             }
         });
         sendResponse(res, cart, 200);

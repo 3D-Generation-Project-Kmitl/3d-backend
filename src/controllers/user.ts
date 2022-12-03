@@ -34,7 +34,11 @@ const update = async (req: Request, res: Response, next: NextFunction) => {
         if (id !== userId) {
             return next(new ApplicationError(CommonError.UNAUTHORIZED));
         }
+        const picture = req.file?.path;
         const user = req.body;
+        if (picture) {
+            user.picture = picture;
+        }
         const updatedUser = await prisma.user.update({
             where: {
                 userId: userId
