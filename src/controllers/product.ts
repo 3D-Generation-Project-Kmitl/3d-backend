@@ -37,6 +37,47 @@ const getProducts = async (req: Request, res: Response, next: NextFunction) => {
     }
 }
 
+const searchProduct = async (req: Request, res: Response, next: NextFunction) => {
+
+    try {
+        let { keyword } = req.query as { keyword: string };
+        keyword = keyword.toLowerCase();
+        const products = await prisma.product.findMany({
+            where: {
+                OR: [
+                    {
+                        name: {
+                            mode: 'insensitive',
+                            contains: keyword
+                        }
+                    },
+                    {
+                        details: {
+                            mode: 'insensitive',
+                            contains: keyword
+                        }
+                    },
+                    {
+                        Category: {
+                            name: {
+                                mode: 'insensitive',
+                                contains: keyword
+                            }
+                        }
+                    }
+                ]
+
+            },
+            include: {
+                Model: true
+            }
+        });
+        sendResponse(res, products, 200);
+    } catch (error) {
+        return next(error)
+    }
+}
+
 const getProduct = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const id = Number(req.params.id);
@@ -116,6 +157,7 @@ const remove = async (req: Request, res: Response, next: NextFunction) => {
 export default {
     create,
     getProducts,
+    searchProduct,
     getProduct,
     update,
     remove

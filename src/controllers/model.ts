@@ -8,7 +8,7 @@ const create = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const userId = req.userId;
         const { type } = req.body;
-        const model = req.file?.path;
+        const model = req.file?.path.replaceAll('\\', '/');
 
         if (!model) {
             throw new ApplicationError(CommonError.INVALID_REQUEST);
@@ -66,7 +66,7 @@ const update = async (req: Request, res: Response, next: NextFunction) => {
             throw new ApplicationError(CommonError.UNAUTHORIZED);
         }
 
-        const picture = req.file?.path;
+        const picture = req.file?.path.replaceAll('\\', '/');
 
         const updateResult = await prisma.model.update({
             where: {
