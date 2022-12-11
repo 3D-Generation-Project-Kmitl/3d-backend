@@ -191,7 +191,7 @@ model ReportProduct {
 model Model {
   modelId   Int         @id @default(autoincrement())
   userId    Int
-  model     String
+  model     String?
   picture   String?
   status    ModelStatus @default(AVAILABLE)
   type      ModelType

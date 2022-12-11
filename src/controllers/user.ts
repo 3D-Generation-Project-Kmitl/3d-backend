@@ -3,6 +3,7 @@ import { ApplicationError } from '../errors/applicationError';
 import { CommonError } from '../errors/common';
 import { Request, Response, NextFunction } from 'express';
 import prisma from '../utils/prisma';
+import filePath2FullURL from '../utils/filePath2FullURL';
 
 const getUsers = async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -37,10 +38,12 @@ const update = async (req: Request, res: Response, next: NextFunction) => {
         if (id !== userId) {
             return next(new ApplicationError(CommonError.UNAUTHORIZED));
         }
-        const picture = req.file?.path.replaceAll('\\', '/');
+        const picture = filePath2FullURL(req);
         const user = req.body;
         if (picture) {
             user.picture = picture;
+        } else {
+            delete user.picture;
         }
         const updatedUser = await prisma.user.update({
             where: {

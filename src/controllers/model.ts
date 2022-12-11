@@ -3,22 +3,27 @@ import { CommonError } from '../errors/common';
 import { sendResponse } from '../utils/response';
 import prisma from '../utils/prisma';
 import { Request, Response, NextFunction } from 'express';
+import filePath2FullURL from '../utils/filePath2FullURL';
 
 const create = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const userId = req.userId;
         const { type } = req.body;
-        const model = req.file?.path.replaceAll('\\', '/');
 
-        if (!model) {
+        const files = filePath2FullURL(req);
+        if (!files) {
             throw new ApplicationError(CommonError.INVALID_REQUEST);
         }
+
+        const model = files["model"];
+        const picture = files["picture"];
 
         const modelResult = await prisma.model.create({
             data: {
                 userId: userId,
                 type: type,
-                model: model
+                model: model,
+                picture: picture
             }
         });
 
@@ -34,9 +39,6 @@ const getByUserId = async (req: Request, res: Response, next: NextFunction) => {
         const modelResult = await prisma.model.findMany({
             where: {
                 userId: userId,
-                // NOT: {
-                //     Product: null
-                // }
             }
         },
 
@@ -66,14 +68,21 @@ const update = async (req: Request, res: Response, next: NextFunction) => {
             throw new ApplicationError(CommonError.UNAUTHORIZED);
         }
 
-        const picture = req.file?.path.replaceAll('\\', '/');
+        const files = filePath2FullURL(req);
+        if (!files) {
+            throw new ApplicationError(CommonError.INVALID_REQUEST);
+        }
+
+        const model = files["model"];
+        const picture = files["picture"];
 
         const updateResult = await prisma.model.update({
             where: {
                 modelId: modelId
             },
             data: {
-                picture: picture
+                picture: picture,
+                model: model
             }
         });
 

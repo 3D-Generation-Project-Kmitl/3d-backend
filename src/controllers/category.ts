@@ -4,11 +4,12 @@ import { sendResponse } from '../utils/response';
 import prisma from '../utils/prisma';
 
 import { Request, Response, NextFunction } from 'express';
+import filePath2FullURL from '../utils/filePath2FullURL';
 
 const create = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const category = req.body;
-        const picture = req.file?.path.replaceAll('\\', '/');
+        const picture = filePath2FullURL(req);
         if (!picture) {
             throw new ApplicationError(CommonError.INVALID_REQUEST);
         }
@@ -39,7 +40,7 @@ const update = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const id = Number(req.params.id);
         const category = req.body;
-        const picture = req.file?.path.replaceAll('\\', '/');
+        const picture = filePath2FullURL(req);
 
         const categoryResult = await prisma.category.update({
             where: {
