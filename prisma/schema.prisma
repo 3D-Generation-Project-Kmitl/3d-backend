@@ -23,7 +23,7 @@ model User {
   OauthRefreshToken OauthRefreshToken?
   Identity          Identity?
   Product           Product[]
-  Like              Like[]
+  Favorite          Favorite[]
   Cart              Cart[]
   Order             Order[]
   Wallet            Wallet?
@@ -77,13 +77,13 @@ model Product {
   User          User            @relation(fields: [userId], references: [userId])
   Category      Category        @relation(fields: [categoryId], references: [categoryId])
   Model         Model           @relation(fields: [modelId], references: [modelId])
-  Like          Like[]
+  Favorite      Favorite[]
   Cart          Cart[]
   OrderProduct  OrderProduct[]
   ReportProduct ReportProduct[]
 }
 
-model Like {
+model Favorite {
   userId    Int
   productId Int
   createdAt DateTime @default(now())

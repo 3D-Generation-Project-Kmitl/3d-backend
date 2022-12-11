@@ -4,6 +4,8 @@
 # migrations
 */migrations/*
 
+/sslcert
+
 #uploads
 /uploads
 

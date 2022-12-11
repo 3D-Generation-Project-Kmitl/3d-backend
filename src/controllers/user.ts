@@ -21,6 +21,9 @@ const getUser = async (req: Request, res: Response, next: NextFunction) => {
                 userId: id
             }
         });
+        if (!user) {
+            return next(new ApplicationError(CommonError.RESOURCE_NOT_FOUND));
+        }
         sendResponse(res, user, 200);
     } catch (error: any) {
         return next(error);
@@ -34,7 +37,7 @@ const update = async (req: Request, res: Response, next: NextFunction) => {
         if (id !== userId) {
             return next(new ApplicationError(CommonError.UNAUTHORIZED));
         }
-        const picture = req.file?.path;
+        const picture = req.file?.path.replaceAll('\\', '/');
         const user = req.body;
         if (picture) {
             user.picture = picture;
