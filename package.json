@@ -6,7 +6,11 @@
   "scripts": {
     "dev": "ts-node-dev --poll ./src/server.ts",
     "build": "rimraf ./dist && tsc",
-    "start": "npm run build && node ./dist/server.js"
+    "start": "node ./dist/server.js",
+    "start:docker": "npm run build && node --inspect=0.0.0.0 dist/server.js",
+    "db:generate": "npx prisma generate",
+    "db:migrate": "npx prisma migrate dev --name user-entity && npx prisma generate",
+    "db:migrate:docker": "docker compose run api npm run db:migrate"
   },
   "repository": {
     "type": "git",
