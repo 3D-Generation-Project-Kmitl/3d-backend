@@ -3,19 +3,9 @@ import dotenv from 'dotenv';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import router from './routes';
-import https from 'https';
-import fs from 'fs';
 
 
 dotenv.config();
-
-declare global {
-    namespace Express {
-        interface Request {
-            userId: number
-        }
-    }
-}
 
 const server: Application = express();
 

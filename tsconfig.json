@@ -1,18 +1,25 @@
 {
   "compilerOptions": {
-  "target": "es2016",
-  "module": "commonjs",
-  "outDir": "./dist",
-  "rootDir": "./src",
-  "declaration": true,
-  "moduleResolution": "node",
-  "sourceMap": true,
-  "strict": true,
-  "lib": ["esnext"],
-  "esModuleInterop": true,
-  "resolveJsonModule": true,
-  "skipLibCheck": true,
-  "experimentalDecorators": true,
-  "strictPropertyInitialization": false
+    "typeRoots": [
+      "@types",
+      "./node_modules/@types",
+    ],
+    "target": "es2016",
+    "module": "commonjs",
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "declaration": true,
+    "moduleResolution": "node",
+    "sourceMap": true,
+    "strict": true,
+    "lib": [
+      "esnext"
+    ],
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "experimentalDecorators": true,
+    "strictPropertyInitialization": false,
+    "allowSyntheticDefaultImports": true,
   }
 }

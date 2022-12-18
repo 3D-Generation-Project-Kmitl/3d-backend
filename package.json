@@ -9,8 +9,9 @@
     "start": "node ./dist/server.js",
     "start:docker": "npm run build && node --inspect=0.0.0.0 dist/server.js",
     "db:generate": "npx prisma generate",
-    "db:migrate": "npx prisma migrate dev --name user-entity && npx prisma generate",
-    "db:migrate:docker": "docker compose run api npm run db:migrate"
+    "db:migrate": "npx prisma migrate deploy && npx prisma generate",
+    "db:migrate:docker": "docker compose run api npm run db:migrate",
+    "rebuild:be": "docker compose build api && docker compose rm --stop api && docker compose up -d api"
   },
   "repository": {
     "type": "git",
