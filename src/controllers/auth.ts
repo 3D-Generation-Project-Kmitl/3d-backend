@@ -7,11 +7,9 @@ import { CommonError } from '../errors/common';
 import { AuthError } from '../errors/auth';
 import { sendResponse } from '../utils/response';
 import { isExpired } from '../utils/isExpired';
-import prisma from '../utils/prisma';
 
 import { Request, Response, NextFunction } from 'express';
 import bcrypt from 'bcryptjs';
-import dayjs from 'dayjs';
 
 
 const validateToken = async (req: Request, res: Response, next: NextFunction) => {
@@ -113,7 +111,7 @@ const login = async (req: Request, res: Response, next: NextFunction) => {
 const logout = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const userId = req.userId;
-        await authService.deleteRefreshToken(userId);
+        await authService.removeRefreshToken(userId);
         res.clearCookie('accessToken');
         res.clearCookie('refreshToken');
         sendResponse(res, { message: 'Logout success' }, 200);

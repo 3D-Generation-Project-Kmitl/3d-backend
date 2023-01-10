@@ -9,6 +9,11 @@ export const createUser = async (user: User) => {
     return userResult;
 }
 
+export const getUsers = async () => {
+    const userResult = await prisma.user.findMany();
+    return userResult;
+}
+
 export const getUserById = async (userId: number) => {
     const userResult = await prisma.user.findUnique({
         where: {
@@ -46,4 +51,14 @@ export const updatePassword = async (userId: number, password: string) => {
             password: password
         }
     });
+}
+
+export const removeUser = async (userId: number) => {
+    const user = await prisma.user.delete({
+        where: {
+            userId: userId
+        }
+    });
+
+    return user;
 }
