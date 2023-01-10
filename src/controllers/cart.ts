@@ -1,7 +1,5 @@
-import { ApplicationError } from '../errors/applicationError';
-import { CommonError } from '../errors/common';
 import { sendResponse } from '../utils/response';
-import prisma from '../utils/prisma';
+import { cartService } from '../services';
 
 import { Request, Response, NextFunction } from 'express';
 
@@ -9,19 +7,7 @@ const create = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const userId = Number(req.userId);
         const { productId } = req.body
-        const cart = await prisma.cart.create({
-            data: {
-                userId,
-                productId
-            },
-            include: {
-                Product: {
-                    include: {
-                        Model: true
-                    }
-                }
-            }
-        });
+        const cart = await cartService.createCart(userId, productId);
         sendResponse(res, cart, 201);
     } catch (error) {
         return next(error)
@@ -31,21 +17,7 @@ const create = async (req: Request, res: Response, next: NextFunction) => {
 const get = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const userId = Number(req.userId);
-        const cart = await prisma.cart.findMany({
-            where: {
-                userId
-            },
-            orderBy: {
-                updatedAt: 'desc'
-            },
-            include: {
-                Product: {
-                    include: {
-                        Model: true
-                    }
-                }
-            }
-        });
+        const cart = await cartService.getCartByUserId(userId);
         sendResponse(res, cart, 200);
     } catch (error) {
         return next(error)
@@ -56,12 +28,7 @@ const remove = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const userId = Number(req.userId);
         const { productId } = req.body
-        const cart = await prisma.cart.deleteMany({
-            where: {
-                userId,
-                productId
-            }
-        });
+        const cart = await cartService.removeCart(userId, productId);
         sendResponse(res, cart, 200);
     } catch (error) {
         return next(error)
