@@ -1,7 +1,7 @@
 import { ApplicationError } from '../errors/applicationError';
 import { CommonError } from '../errors/common';
 import { sendResponse } from '../utils/response';
-import prisma from '../utils/prisma';
+import { productService } from '../services';
 
 import { Request, Response, NextFunction } from 'express';
 
@@ -10,9 +10,7 @@ const create = async (req: Request, res: Response, next: NextFunction) => {
         const userId = Number(req.userId);
         const product = req.body
         product.userId = userId;
-        const newProduct = await prisma.product.create({
-            data: product
-        });
+        const newProduct = await productService.createProduct(product);
         sendResponse(res, newProduct, 201);
     } catch (error) {
         return next(error)
@@ -21,16 +19,7 @@ const create = async (req: Request, res: Response, next: NextFunction) => {
 
 const getProducts = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const products = await prisma.product.findMany(
-            {
-                orderBy: {
-                    productId: 'desc'
-                },
-                include: {
-                    Model: true
-                }
-            }
-        );
+        const products = await productService.getProducts();
         sendResponse(res, products, 200);
     } catch (error) {
         return next(error)
@@ -38,40 +27,10 @@ const getProducts = async (req: Request, res: Response, next: NextFunction) => {
 }
 
 const searchProduct = async (req: Request, res: Response, next: NextFunction) => {
-
     try {
         let { keyword } = req.query as { keyword: string };
         keyword = keyword.toLowerCase();
-        const products = await prisma.product.findMany({
-            where: {
-                OR: [
-                    {
-                        name: {
-                            mode: 'insensitive',
-                            contains: keyword
-                        }
-                    },
-                    {
-                        details: {
-                            mode: 'insensitive',
-                            contains: keyword
-                        }
-                    },
-                    {
-                        Category: {
-                            name: {
-                                mode: 'insensitive',
-                                contains: keyword
-                            }
-                        }
-                    }
-                ]
-
-            },
-            include: {
-                Model: true
-            }
-        });
+        const products = await productService.searchProduct(keyword);
         sendResponse(res, products, 200);
     } catch (error) {
         return next(error)
@@ -81,15 +40,7 @@ const searchProduct = async (req: Request, res: Response, next: NextFunction) =>
 const getProduct = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const id = Number(req.params.id);
-        const product = await prisma.product.findUnique({
-            where: {
-                productId: id
-            },
-            include: {
-                Model: true,
-                User: true
-            }
-        });
+        const product = await productService.getProduct(id);
         if (!product) {
             throw new ApplicationError(CommonError.RESOURCE_NOT_FOUND);
         }
@@ -104,23 +55,14 @@ const update = async (req: Request, res: Response, next: NextFunction) => {
         const userId = Number(req.userId);
         const id = Number(req.params.id);
         const product = req.body
-        const productResult = await prisma.product.findUnique({
-            where: {
-                productId: id
-            }
-        });
+        const productResult = await productService.getProduct(id);
         if (!productResult) {
             throw new ApplicationError(CommonError.RESOURCE_NOT_FOUND);
         }
         if (userId !== productResult.userId) {
             throw new ApplicationError(CommonError.UNAUTHORIZED);
         }
-        const updatedProduct = await prisma.product.update({
-            where: {
-                productId: id
-            },
-            data: product
-        });
+        const updatedProduct = await productService.updateProduct(id, product);
         sendResponse(res, updatedProduct, 200);
     } catch (error) {
         return next(error)
@@ -131,22 +73,14 @@ const remove = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const userId = Number(req.userId);
         const id = Number(req.params.id);
-        const product = await prisma.product.findUnique({
-            where: {
-                productId: id
-            }
-        });
+        const product = await productService.getProduct(id);
         if (!product) {
             throw new ApplicationError(CommonError.RESOURCE_NOT_FOUND);
         }
         if (userId !== product.userId) {
             throw new ApplicationError(CommonError.UNAUTHORIZED);
         }
-        await prisma.product.delete({
-            where: {
-                productId: id
-            }
-        });
+        await productService.removeProduct(id);
         sendResponse(res, null, 204);
     } catch (error) {
         return next(error)

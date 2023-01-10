@@ -1,5 +1,4 @@
 import prisma from '../utils/prisma';
-import dayjs from 'dayjs';
 import { User } from '@prisma/client';
 
 export const createUser = async (user: User) => {
