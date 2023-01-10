@@ -44,7 +44,7 @@ export const updateRefreshToken = async (userId: number, refreshToken: string) =
     });
 }
 
-export const deleteRefreshToken = async (userId: number) => {
+export const removeRefreshToken = async (userId: number) => {
     await prisma.oauthRefreshToken.update({
         where: {
             userId: userId
