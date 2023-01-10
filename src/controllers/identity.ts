@@ -1,18 +1,12 @@
-import { ApplicationError } from '../errors/applicationError';
-import { CommonError } from '../errors/common';
 import { sendResponse } from '../utils/response';
-import prisma from '../utils/prisma';
+import { identityService, userService } from '../services';
 
 import { Request, Response, NextFunction } from 'express';
 
 const create = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const identity = req.body;
-
-        const identityResult = await prisma.identity.create({
-            data: identity
-        });
-
+        const identityResult = await identityService.createIdentity(identity);
         sendResponse(res, identityResult, 200);
     } catch (error) {
         return next(error);
@@ -22,11 +16,7 @@ const create = async (req: Request, res: Response, next: NextFunction) => {
 const get = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const userId = req.userId;
-        const identityResult = await prisma.identity.findUnique({
-            where: {
-                userId: userId
-            }
-        });
+        const identityResult = await identityService.getIdentityByUserId(userId);
         sendResponse(res, identityResult, 200);
     } catch (error) {
         return next(error);
@@ -37,14 +27,7 @@ const update = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const userId = req.userId;
         const identity = req.body;
-
-        const identityResult = await prisma.identity.update({
-            where: {
-                userId: userId
-            },
-            data: identity
-        });
-
+        const identityResult = await identityService.updateIdentity(userId, identity);
         sendResponse(res, identityResult, 200);
     } catch (error) {
         return next(error);
@@ -55,25 +38,10 @@ const adminUpdate = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { status, issue, userId } = req.body;
 
-        const identityResult = await prisma.identity.update({
-            where: {
-                userId: userId
-            },
-            data: {
-                status: status,
-                issue: issue
-            }
-        });
+        const identityResult = await identityService.adminUpdateIdentity(userId, status, issue);
 
         if (status === 'APPROVED') {
-            await prisma.user.update({
-                where: {
-                    userId: userId
-                },
-                data: {
-                    isVerified: true
-                }
-            });
+            await userService.updateVerified(userId, true);
         }
 
         sendResponse(res, identityResult, 200);
