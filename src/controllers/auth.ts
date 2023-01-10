@@ -1,6 +1,7 @@
 import authConfig from '../configs/auth';
 import cookieConfig from '../configs/cookie';
 import authToken from '../utils/token';
+import { userService, authService } from '../services';
 import { ApplicationError } from '../errors/applicationError';
 import { CommonError } from '../errors/common';
 import { AuthError } from '../errors/auth';
@@ -20,11 +21,7 @@ const validateToken = async (req: Request, res: Response, next: NextFunction) =>
             return next(new ApplicationError(AuthError.REFRESH_TOKEN_IS_REQUIRED));
         }
 
-        const result = await prisma.oauthRefreshToken.findFirst({
-            where: {
-                refreshToken: refreshToken
-            }
-        });
+        const result = await authService.getRefreshToken(refreshToken);
 
         if (!result) {
             return next(new ApplicationError(AuthError.REFRESH_TOKEN_NOT_FOUND));
@@ -38,20 +35,9 @@ const validateToken = async (req: Request, res: Response, next: NextFunction) =>
         const newAccessToken = authToken.GenerateAccessToken(result.userId);
 
         // Extend refresh token expired time
-        await prisma.oauthRefreshToken.update({
-            where: {
-                userId: result.userId
-            },
-            data: {
-                expired_at: dayjs().add(authConfig.jwtRefreshExpiration, 'day').toDate()
-            }
-        });
+        await authService.updateExpiredToken(result.userId);
 
-        const userResult = await prisma.user.findUnique({
-            where: {
-                userId: result.userId
-            }
-        });
+        const userResult = await userService.getUserById(result.userId);
 
         if (!userResult) {
             return next(new ApplicationError(CommonError.UNAUTHORIZED));
@@ -74,20 +60,12 @@ const register = async (req: Request, res: Response, next: NextFunction) => {
         user.password = bcrypt.hashSync(user.password, authConfig.salt);
         user.role = 'USER';
         user.isVerified = false;
-        const userResult = await prisma.user.create({
-            data: user
-        });
+        const userResult = await userService.createUser(user);
 
         const accessToken = authToken.GenerateAccessToken(userResult.userId);
         const refreshToken = await authToken.GenerateRefreshToken();
 
-        await prisma.oauthRefreshToken.create({
-            data: {
-                userId: userResult.userId,
-                refreshToken: refreshToken,
-                expired_at: dayjs().add(authConfig.jwtRefreshExpiration, 'day').toDate()
-            }
-        });
+        await authService.createRefreshToken(userResult.userId, refreshToken);
 
         // Remove unused password from userResult
         const { password: unusedPassword, ...userProfile } = userResult;
@@ -104,11 +82,7 @@ const register = async (req: Request, res: Response, next: NextFunction) => {
 const login = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { email, password } = req.body;
-        const userResult = await prisma.user.findUnique({
-            where: {
-                email
-            }
-        });
+        const userResult = await userService.getUserByEmail(email);
 
         if (!userResult) {
             return next(new ApplicationError(CommonError.UNAUTHORIZED));
@@ -122,15 +96,7 @@ const login = async (req: Request, res: Response, next: NextFunction) => {
         const accessToken = authToken.GenerateAccessToken(userResult.userId);
         const refreshToken = await authToken.GenerateRefreshToken();
 
-        await prisma.oauthRefreshToken.update({
-            where: {
-                userId: userResult.userId
-            },
-            data: {
-                refreshToken: refreshToken,
-                expired_at: dayjs().add(authConfig.jwtRefreshExpiration, 'day').toDate()
-            }
-        });
+        await authService.updateRefreshToken(userResult.userId, refreshToken);
 
         // Remove unused password from userResult
         const { password: unusedPassword, ...userProfile } = userResult;
@@ -147,15 +113,7 @@ const login = async (req: Request, res: Response, next: NextFunction) => {
 const logout = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const userId = req.userId;
-        await prisma.oauthRefreshToken.update({
-            where: {
-                userId: userId
-            },
-            data: {
-                refreshToken: null,
-                expired_at: null
-            }
-        });
+        await authService.deleteRefreshToken(userId);
         res.clearCookie('accessToken');
         res.clearCookie('refreshToken');
         sendResponse(res, { message: 'Logout success' }, 200);
@@ -171,12 +129,7 @@ const getAccessToken = async (req: Request, res: Response, next: NextFunction) =
             return next(new ApplicationError(AuthError.REFRESH_TOKEN_IS_REQUIRED));
         }
 
-        const result = await prisma.oauthRefreshToken.findFirst({
-            where: {
-                refreshToken: refreshToken
-            }
-        });
-
+        const result = await authService.getRefreshToken(refreshToken);
         if (!result) {
             return next(new ApplicationError(AuthError.REFRESH_TOKEN_NOT_FOUND));
         }
@@ -189,14 +142,7 @@ const getAccessToken = async (req: Request, res: Response, next: NextFunction) =
         const newAccessToken = authToken.GenerateAccessToken(result.userId);
 
         // Extend refresh token expired time
-        await prisma.oauthRefreshToken.update({
-            where: {
-                userId: result.userId
-            },
-            data: {
-                expired_at: dayjs().add(authConfig.jwtRefreshExpiration, 'day').toDate()
-            }
-        });
+        await authService.updateExpiredToken(result.userId);
 
         res.cookie('accessToken', newAccessToken, cookieConfig);
         sendResponse(res, { accessToken: newAccessToken }, 200);
@@ -213,11 +159,7 @@ const updatePassword = async (req: Request, res: Response, next: NextFunction) =
         return next(new ApplicationError(AuthError.PASSWORD_SHOULD_DIFFERENT));
     }
     try {
-        const userResult = await prisma.user.findUnique({
-            where: {
-                userId: userId,
-            }
-        });
+        const userResult = await userService.getUserById(userId);
         if (!userResult) {
             return next(new ApplicationError(AuthError.USER_NOT_FOUND))
         }
@@ -233,14 +175,7 @@ const updatePassword = async (req: Request, res: Response, next: NextFunction) =
 
         const newPasswordHash = bcrypt.hashSync(newPassword, authConfig.salt);
 
-        await prisma.user.update({
-            where: {
-                userId: userResult.userId,
-            },
-            data: {
-                password: newPasswordHash
-            }
-        })
+        await userService.updatePassword(userId, newPasswordHash);
 
         sendResponse(res, { message: 'Update password success' });
 
