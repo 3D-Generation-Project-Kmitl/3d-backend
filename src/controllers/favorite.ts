@@ -1,6 +1,5 @@
 import { sendResponse } from '../utils/response';
 import { favoriteService } from '../services';
-import prisma from '../utils/prisma';
 
 import { Request, Response, NextFunction } from 'express';
 
