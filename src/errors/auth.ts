@@ -7,6 +7,12 @@ export const AuthError = {
         message: 'The given email address is already taken',
         statusCode: 400,
     },
+    OTP_IS_EXPIRED: {
+        type: ApplicationError.errorType.APP_REALIZ_SERVICE,
+        code: 'OTP_IS_EXPIRED',
+        message: 'OTP is expired',
+        statusCode: 401,
+    },
     REFRESH_TOKEN_IS_REQUIRED: {
         type: ApplicationError.errorType.APP_REALIZ_SERVICE,
         code: 'REFRESH_TOKEN_IS_REQUIRED',
@@ -29,6 +35,12 @@ export const AuthError = {
         type: ApplicationError.errorType.APP_REALIZ_SERVICE,
         code: 'INVALID_PASSWORD',
         message: 'Invalid password',
+        statusCode: 403,
+    },
+    INVALID_OTP: {
+        type: ApplicationError.errorType.APP_REALIZ_SERVICE,
+        code: 'INVALID_OTP',
+        message: 'Invalid OTP',
         statusCode: 403,
     },
     TOKEN_EXPIRED: {

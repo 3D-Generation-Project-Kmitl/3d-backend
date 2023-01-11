@@ -1,5 +1,6 @@
 import authConfig from '../configs/auth';
 import prisma from '../utils/prisma';
+import { generateOTP } from '../utils/otp';
 import dayjs from 'dayjs';
 
 export const createRefreshToken = async (userId: number, refreshToken: string) => {
@@ -54,4 +55,32 @@ export const removeRefreshToken = async (userId: number) => {
             expired_at: null
         }
     });
+}
+
+export const getOTP = async (userId: number) => {
+    const result = await prisma.otp.findFirst({
+        where: {
+            userId: userId
+        }
+    });
+    return result;
+}
+
+export const updateOTP = async (userId: number) => {
+    const otp = await generateOTP();
+    const result = await prisma.otp.upsert({
+        where: {
+            userId: userId
+        },
+        update: {
+            otp: otp,
+            expired_at: dayjs().add(authConfig.otpExpiration, 'minute').toDate()
+        },
+        create: {
+            userId: userId,
+            otp: otp,
+            expired_at: dayjs().add(authConfig.otpExpiration, 'minute').toDate()
+        }
+    });
+    return result;
 }
