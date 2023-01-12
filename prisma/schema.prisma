@@ -30,6 +30,7 @@ model User {
   Notification      Notification[]
   ReportProduct     ReportProduct[]
   Model             Model[]
+  Otp               Otp[]
 }
 
 model OauthRefreshToken {
@@ -199,6 +200,15 @@ model Model {
   updatedAt DateTime    @updatedAt
   User      User        @relation(fields: [userId], references: [userId])
   Product   Product?
+}
+
+model Otp {
+  userId     Int       @id
+  otp        String?   @db.VarChar(6)
+  expired_at DateTime?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  User       User      @relation(fields: [userId], references: [userId])
 }
 
 enum Role {

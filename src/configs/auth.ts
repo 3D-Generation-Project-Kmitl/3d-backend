@@ -9,7 +9,7 @@ const authConfig = {
     secret: String(env.AUTH_SECRET),
     jwtExpiration: 180, // 180 second
     jwtRefreshExpiration: 7, // 7 days
-
+    otpExpiration: 5, // 5 minutes
 };
 
 export default authConfig;

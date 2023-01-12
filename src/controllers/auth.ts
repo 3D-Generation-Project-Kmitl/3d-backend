@@ -7,6 +7,7 @@ import { CommonError } from '../errors/common';
 import { AuthError } from '../errors/auth';
 import { sendResponse } from '../utils/response';
 import { isExpired } from '../utils/isExpired';
+import { sendOTP } from '../utils/nodemailer';
 
 import { Request, Response, NextFunction } from 'express';
 import bcrypt from 'bcryptjs';
@@ -182,11 +183,72 @@ const updatePassword = async (req: Request, res: Response, next: NextFunction) =
     }
 }
 
+const forceUpdatePassword = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { newPassword, refreshToken } = req.body;
+        const refreshTokenResult = await authService.getRefreshToken(refreshToken);
+        if (!refreshTokenResult) {
+            return next(new ApplicationError(AuthError.REFRESH_TOKEN_NOT_FOUND));
+        }
+        const newPasswordHash = bcrypt.hashSync(newPassword, authConfig.salt);
+        await userService.updatePassword(refreshTokenResult.userId, newPasswordHash);
+        sendResponse(res, { message: 'Update password success' });
+    } catch (error) {
+        return next(error);
+    }
+}
+
+const forgotPassword = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { email } = req.body;
+        const userResult = await userService.getUserByEmail(email);
+        if (!userResult) {
+            return next(new ApplicationError(AuthError.USER_NOT_FOUND));
+        }
+        const otp = await authService.updateOTP(userResult.userId);
+        if (!otp.otp) {
+            return next(new ApplicationError(CommonError.INTERNAL_SERVER_ERROR));
+        }
+        sendOTP(email, otp.otp);
+        sendResponse(res, { message: 'Send OTP success' }, 200);
+    } catch (error) {
+        return next(error);
+    }
+}
+
+const checkOTP = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { otp, email } = req.body;
+        const userResult = await userService.getUserByEmail(email);
+        if (!userResult) {
+            return next(new ApplicationError(AuthError.USER_NOT_FOUND));
+        }
+        const otpResult = await authService.getOTP(userResult.userId);
+        if (!otpResult) {
+            return next(new ApplicationError(CommonError.RESOURCE_NOT_FOUND));
+        }
+        if (otpResult.otp !== otp) {
+            return next(new ApplicationError(AuthError.INVALID_OTP));
+        }
+        if (isExpired(otpResult.expired_at)) {
+            return next(new ApplicationError(AuthError.OTP_IS_EXPIRED));
+        }
+        const refreshToken = await authToken.GenerateRefreshToken();
+        await authService.updateRefreshToken(userResult.userId, refreshToken);
+        sendResponse(res, { refreshToken }, 200);
+    } catch (error) {
+        return next(error);
+    }
+}
+
 export default {
+    validateToken,
     register,
     login,
     logout,
     getAccessToken,
     updatePassword,
-    validateToken,
+    forceUpdatePassword,
+    forgotPassword,
+    checkOTP,
 }
