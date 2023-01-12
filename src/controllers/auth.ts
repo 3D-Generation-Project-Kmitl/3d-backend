@@ -7,7 +7,7 @@ import { CommonError } from '../errors/common';
 import { AuthError } from '../errors/auth';
 import { sendResponse } from '../utils/response';
 import { isExpired } from '../utils/isExpired';
-import { sendOTP } from '../utils/nodemailer';
+import { sendOTP } from '../utils/mailer';
 
 import { Request, Response, NextFunction } from 'express';
 import bcrypt from 'bcryptjs';
