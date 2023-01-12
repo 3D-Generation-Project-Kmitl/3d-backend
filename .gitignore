@@ -6,6 +6,9 @@
 
 /sslcert
 
+#log
+/logs
+
 #uploads
 /uploads
 

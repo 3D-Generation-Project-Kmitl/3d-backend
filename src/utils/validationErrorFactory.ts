@@ -3,7 +3,7 @@ import { ApplicationError } from '../errors/applicationError';
 
 function mapValidationError(error: any) {
     return {
-        type: ApplicationError.errorType.APP_REALIZ_SERVICE,
+        type: ApplicationError.errorType.APP_SERVICE,
         code: 'VALIDATION_ERROR',
         message: Object.values(error.constraints)[0],
         statusCode: 400,
