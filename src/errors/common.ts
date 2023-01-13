@@ -3,7 +3,7 @@ import { ApplicationError } from './applicationError';
 const CommonError = {
     // Application custom errors
     UNKNOWN_ERROR: {
-        type: ApplicationError.errorType.APP_REALIZ_SERVICE,
+        type: ApplicationError.errorType.APP_SERVICE,
         code: 'UNKNOWN_ERROR',
         message: 'Unknown error',
         statusCode: 500,

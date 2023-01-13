@@ -8,7 +8,7 @@ export class ApplicationError extends Error {
     public statusCode?: number;
 
     static errorType = {
-        APP_REALIZ_SERVICE: 'APP_REALIZ_SERVICE',
+        APP_SERVICE: 'APP_SERVICE',
         INTERNAL: 'INTERNAL',
         NETWORK: 'NETWORK',
         UNKNOWN: 'UNKNOWN',

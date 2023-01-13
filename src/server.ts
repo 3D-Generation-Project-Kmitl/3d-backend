@@ -3,6 +3,8 @@ import dotenv from 'dotenv';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import router from './routes';
+import logger from './utils/logger';
+import { errorHandler } from './middleware/error';
 
 
 dotenv.config();
@@ -26,6 +28,8 @@ server.use('/api/health-check', (req, res) => {
 });
 server.use('/api', router);
 
+server.use(errorHandler);
+
 server.listen(server.get('port'), () => {
-    console.log(`Server is running on port ${server.get('port')}`);
+    logger.info(`Server is running on port ${server.get('port')}`);
 });
