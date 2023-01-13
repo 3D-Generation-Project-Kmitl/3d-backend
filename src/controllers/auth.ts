@@ -185,8 +185,11 @@ const updatePassword = async (req: Request, res: Response, next: NextFunction) =
 
 const forceUpdatePassword = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const { newPassword, refreshToken } = req.body;
-        const refreshTokenResult = await authService.getRefreshToken(refreshToken);
+        const { newPassword, token } = req.body;
+        if (!token) {
+            return next(new ApplicationError(AuthError.REFRESH_TOKEN_IS_REQUIRED));
+        }
+        const refreshTokenResult = await authService.getRefreshToken(token);
         if (!refreshTokenResult) {
             return next(new ApplicationError(AuthError.REFRESH_TOKEN_NOT_FOUND));
         }
@@ -235,7 +238,7 @@ const checkOTP = async (req: Request, res: Response, next: NextFunction) => {
         }
         const refreshToken = await authToken.GenerateRefreshToken();
         await authService.updateRefreshToken(userResult.userId, refreshToken);
-        sendResponse(res, { refreshToken }, 200);
+        sendResponse(res, { token: refreshToken }, 200);
     } catch (error) {
         return next(error);
     }
