@@ -11,7 +11,7 @@ export const getProducts = async () => {
     const products = await prisma.product.findMany(
         {
             orderBy: {
-                productId: 'desc'
+                views: 'desc'
             },
             include: {
                 Model: true
@@ -22,15 +22,21 @@ export const getProducts = async () => {
 }
 
 export const getProduct = async (id: number) => {
-    const product = await prisma.product.findUnique({
+    const product = await prisma.product.update({
         where: {
             productId: id
+        },
+        data: {
+            views: {
+                increment: 1
+            }
         },
         include: {
             Model: true,
             User: true
         }
     });
+
     return product;
 }
 
