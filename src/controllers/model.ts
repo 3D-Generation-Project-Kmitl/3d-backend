@@ -20,14 +20,7 @@ const create = async (req: Request, res: Response, next: NextFunction) => {
         const model = files["model"];
         const picture = files["picture"];
 
-        const modelData = {
-            userId: userId,
-            type: type,
-            model: model,
-            picture: picture
-        }
-
-        const modelResult = await modelService.createModel(modelData);
+        const modelResult = await modelService.createModel(userId, type, model, picture);
 
         sendResponse(res, modelResult, 200);
     } catch (error) {

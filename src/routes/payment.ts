@@ -4,6 +4,7 @@ import { Router } from 'express';
 
 const router = Router();
 
-router.post('/', [verifyToken], paymentController.create);
+router.post('/getPaymentIntent', [verifyToken], paymentController.create);
+router.post('/webhook', paymentController.webhook);
 
 export default router;

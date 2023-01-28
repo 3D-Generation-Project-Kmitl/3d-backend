@@ -8,6 +8,8 @@ import modelRouter from './model';
 import cartRouter from './cart';
 import favoriteRouter from './favorite';
 import paymentRouter from './payment';
+import orderRouter from './order';
+import walletRouter from './wallet';
 
 const router: Router = Router();
 
@@ -20,5 +22,7 @@ router.use('/model', modelRouter);
 router.use('/cart', cartRouter);
 router.use('/favorite', favoriteRouter);
 router.use('/payment', paymentRouter);
+router.use('/order', orderRouter);
+router.use('/wallet', walletRouter);
 
 export default router;

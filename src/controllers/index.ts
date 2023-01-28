@@ -7,3 +7,5 @@ export { default as modelController } from './model';
 export { default as cartController } from './cart';
 export { default as favoriteController } from './favorite';
 export { default as paymentController } from './payment';
+export { default as orderController } from './order';
+export { default as walletController } from './wallet';

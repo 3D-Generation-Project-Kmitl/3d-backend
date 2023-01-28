@@ -1,8 +1,30 @@
 import prisma from '../utils/prisma';
+import { ModelType, Cart, Product, Model } from '@prisma/client';
 
-export const createModel = async (model: any) => {
+type CartProduct = Cart & { Product: Product & { Model: Model } };
+
+export const createModel = async (userId: number, type: ModelType, model: string, picture: string) => {
     const modelResult = await prisma.model.create({
-        data: model
+        data: {
+            userId: userId,
+            type: type,
+            model: model,
+            picture: picture
+        }
+    });
+    return modelResult;
+}
+
+export const createModelMany = async (carts: CartProduct[], type: ModelType) => {
+    const modelResult = await prisma.model.createMany({
+        data: carts.map((cart: CartProduct) => {
+            return {
+                userId: cart.userId,
+                type: type,
+                model: cart.Product.Model.model,
+                picture: cart.Product.Model.picture
+            }
+        })
     });
     return modelResult;
 }

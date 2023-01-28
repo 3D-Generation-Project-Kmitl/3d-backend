@@ -45,3 +45,12 @@ export const removeCart = async (userId: number, productId: number) => {
     });
     return cart;
 }
+
+export const removeAllCart = async (userId: number) => {
+    const cart = await prisma.cart.deleteMany({
+        where: {
+            userId
+        }
+    });
+    return cart;
+}
