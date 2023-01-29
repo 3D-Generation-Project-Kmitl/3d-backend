@@ -4,8 +4,9 @@ import { Router } from 'express';
 
 const router = Router();
 
-router.post('/', [verifyToken], orderController.create);
-router.get('/', [verifyToken], orderController.getOrderById);
 router.get('/myOrders', [verifyToken], orderController.getOrdersByUserId);
+router.post('/', [verifyToken], orderController.create);
+router.get('/:id', [verifyToken], orderController.getOrderById);
+
 
 export default router;

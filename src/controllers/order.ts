@@ -22,7 +22,7 @@ const getOrdersByUserId = async (req: Request, res: Response, next: NextFunction
 
 const getOrderById = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const order = await orderService.getOrderById(Number(req.body.orderId));
+        const order = await orderService.getOrderById(Number(req.params.id));
         sendResponse(res, order, 200);
     } catch (err) {
         return next(err);
