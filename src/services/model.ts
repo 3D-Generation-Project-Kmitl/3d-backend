@@ -38,10 +38,35 @@ export const getModelById = async (id: number) => {
     return modelResult;
 }
 
-export const getModelsByUserId = async (userId: number) => {
+export const getModelsByStoreId = async (userId: number, isProduct: boolean) => {
+    if (isProduct) {
+        const modelResult = await prisma.model.findMany({
+            where: {
+                userId: userId,
+                type: ModelType.ADD || ModelType.CREATE,
+                NOT: {
+                    Product: null
+                }
+            },
+        });
+        return modelResult;
+    } else {
+        const modelResult = await prisma.model.findMany({
+            where: {
+                userId: userId,
+                type: ModelType.ADD || ModelType.CREATE,
+                Product: null
+            },
+        });
+        return modelResult;
+    }
+}
+
+export const getModelsByCustomerId = async (userId: number) => {
     const modelResult = await prisma.model.findMany({
         where: {
             userId: userId,
+            type: ModelType.BUY
         }
     });
     return modelResult;

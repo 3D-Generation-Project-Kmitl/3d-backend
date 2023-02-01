@@ -6,7 +6,8 @@ import { verifyToken } from '../middleware/auth';
 const router = Router();
 
 router.post('/', [verifyToken, upload.fields([{ name: 'picture' }, { name: 'model' }])], modelController.create);
-router.get('/', [verifyToken], modelController.getByUserId);
+router.get('/customer', [verifyToken], modelController.getByCustomerId);
+router.get('/store', [verifyToken], modelController.getModelsByStoreId);
 router.put('/:id', [verifyToken, upload.fields([{ name: 'picture' }, { name: 'model' }])], modelController.update);
 router.delete('/:id', [verifyToken], modelController.remove);
 

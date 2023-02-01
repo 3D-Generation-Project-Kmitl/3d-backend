@@ -28,10 +28,23 @@ const create = async (req: Request, res: Response, next: NextFunction) => {
     }
 }
 
-const getByUserId = async (req: Request, res: Response, next: NextFunction) => {
+const getModelsByStoreId = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const userId = req.userId;
-        const modelResult = await modelService.getModelsByUserId(userId);
+        const { isProduct } = req.query;
+
+        const modelResult = await modelService.getModelsByStoreId(userId, isProduct === "true");
+
+        sendResponse(res, modelResult, 200);
+    } catch (error) {
+        return next(error);
+    }
+}
+
+const getByCustomerId = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const userId = req.userId;
+        const modelResult = await modelService.getModelsByCustomerId(userId);
         sendResponse(res, modelResult, 200);
     } catch (error) {
         return next(error);
@@ -82,7 +95,8 @@ const remove = async (req: Request, res: Response, next: NextFunction) => {
 
 export default {
     create,
-    getByUserId,
+    getByCustomerId,
+    getModelsByStoreId,
     update,
     remove
 }
