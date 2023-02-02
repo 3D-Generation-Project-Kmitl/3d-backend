@@ -11,6 +11,7 @@ import { sendOTP } from '../utils/mailer';
 
 import { Request, Response, NextFunction } from 'express';
 import bcrypt from 'bcryptjs';
+import { generateRef } from '../utils/otp';
 
 
 const validateToken = async (req: Request, res: Response, next: NextFunction) => {
@@ -208,12 +209,7 @@ const forgotPassword = async (req: Request, res: Response, next: NextFunction) =
         if (!userResult) {
             return next(new ApplicationError(AuthError.USER_NOT_FOUND));
         }
-        const otp = await authService.updateOTP(userResult.userId);
-        if (!otp.otp) {
-            return next(new ApplicationError(CommonError.INTERNAL_SERVER_ERROR));
-        }
-        sendOTP(email, otp.otp);
-        sendResponse(res, { message: 'Send OTP success' }, 200);
+        sendResponse(res, { message: 'reset password' }, 200);
     } catch (error) {
         return next(error);
     }
@@ -258,8 +254,9 @@ const resendOTP = async (req: Request, res: Response, next: NextFunction) => {
         if (!otp.otp) {
             return next(new ApplicationError(CommonError.INTERNAL_SERVER_ERROR));
         }
-        sendOTP(email, otp.otp);
-        sendResponse(res, { message: 'Send OTP success' }, 200);
+        const ref = await generateRef();
+        sendOTP(email, otp.otp, ref);
+        sendResponse(res, { message: ref }, 200);
     } catch (error) {
         return next(error);
     }
