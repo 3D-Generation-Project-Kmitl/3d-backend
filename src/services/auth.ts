@@ -22,6 +22,15 @@ export const getRefreshToken = async (refreshToken: string) => {
     return result;
 }
 
+export const getRefreshTokenFromUserId = async (userId: number) => {
+    const result = await prisma.oauthRefreshToken.findFirst({
+        where: {
+            userId: userId
+        }
+    });
+    return result?.refreshToken;
+}
+
 export const updateExpiredToken = async (userId: number) => {
     await prisma.oauthRefreshToken.update({
         where: {

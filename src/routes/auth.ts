@@ -13,7 +13,9 @@ router.post('/getAccessToken', authController.getAccessToken);
 router.put('/updatePassword', [verifyToken, validateRequest(UpdatePasswordRequestDTO)], authController.updatePassword);
 router.post('/validateToken', authController.validateToken);
 router.post('/forgotPassword', authController.forgotPassword);
+router.post('/resendOTP', authController.resendOTP);
 router.post('/checkOTP', authController.checkOTP);
+router.post('/verifyUser', authController.verifyUser);
 router.put('/forceUpdatePassword', authController.forceUpdatePassword);
 
 export default router;

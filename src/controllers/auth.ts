@@ -236,9 +236,51 @@ const checkOTP = async (req: Request, res: Response, next: NextFunction) => {
         if (isExpired(otpResult.expired_at)) {
             return next(new ApplicationError(AuthError.OTP_IS_EXPIRED));
         }
-        const refreshToken = await authToken.GenerateRefreshToken();
-        await authService.updateRefreshToken(userResult.userId, refreshToken);
+        let refreshToken = await authService.getRefreshTokenFromUserId(userResult.userId);
+        if (!refreshToken) {
+            refreshToken = await authToken.GenerateRefreshToken();
+            await authService.updateRefreshToken(userResult.userId, refreshToken);
+        }
         sendResponse(res, { token: refreshToken }, 200);
+    } catch (error) {
+        return next(error);
+    }
+}
+
+const resendOTP = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { email } = req.body;
+        const userResult = await userService.getUserByEmail(email);
+        if (!userResult) {
+            return next(new ApplicationError(AuthError.USER_NOT_FOUND));
+        }
+        const otp = await authService.updateOTP(userResult.userId);
+        if (!otp.otp) {
+            return next(new ApplicationError(CommonError.INTERNAL_SERVER_ERROR));
+        }
+        sendOTP(email, otp.otp);
+        sendResponse(res, { message: 'Send OTP success' }, 200);
+    } catch (error) {
+        return next(error);
+    }
+}
+
+const verifyUser = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { token } = req.body;
+        if (!token) {
+            return next(new ApplicationError(AuthError.REFRESH_TOKEN_IS_REQUIRED));
+        }
+        const refreshTokenResult = await authService.getRefreshToken(token);
+        if (!refreshTokenResult) {
+            return next(new ApplicationError(AuthError.REFRESH_TOKEN_NOT_FOUND));
+        }
+        const userResult = await userService.getUserById(refreshTokenResult.userId);
+        if (!userResult) {
+            return next(new ApplicationError(AuthError.USER_NOT_FOUND));
+        }
+        await userService.updateVerified(userResult.userId, true);
+        sendResponse(res, { message: 'Verify user success' }, 200);
     } catch (error) {
         return next(error);
     }
@@ -253,5 +295,7 @@ export default {
     updatePassword,
     forceUpdatePassword,
     forgotPassword,
+    resendOTP,
     checkOTP,
+    verifyUser
 }
