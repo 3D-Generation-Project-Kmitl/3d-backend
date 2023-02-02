@@ -18,6 +18,7 @@ server.use(cors({
 
 server.set('port', process.env.PORT || 8080);
 
+server.use('/api/payment/webhook', express.raw({ type: "*/*" }));
 server.use(express.json());
 server.use(cookieParser());
 server.use(express.urlencoded({ extended: true }));
