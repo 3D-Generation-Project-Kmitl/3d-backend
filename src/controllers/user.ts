@@ -30,11 +30,7 @@ const getUser = async (req: Request, res: Response, next: NextFunction) => {
 
 const update = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const id = Number(req.params.id);
         const userId = Number(req.userId);
-        if (id !== userId) {
-            return next(new ApplicationError(CommonError.UNAUTHORIZED));
-        }
         const picture = filePath2FullURL(req);
         const user = req.body;
         if (picture) {

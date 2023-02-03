@@ -9,7 +9,7 @@ const router = Router();
 
 router.get('/all', [verifyToken, permit('ADMIN')], userController.getUsers);
 router.get('/:id', userController.getUser);
-router.put('/:id', [verifyToken, validateRequest(UpdateUserRequestDTO), upload.single('picture')], userController.update);
+router.put('/', [verifyToken, upload.single('picture')], userController.update);
 router.delete('/:id', [verifyToken], userController.remove);
 
 export default router;
