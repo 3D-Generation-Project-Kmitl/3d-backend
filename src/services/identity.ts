@@ -37,4 +37,5 @@ export const adminUpdateIdentity = async (userId: number, status: IdentityStatus
             issue: issue
         }
     });
+    return identityResult;
 }

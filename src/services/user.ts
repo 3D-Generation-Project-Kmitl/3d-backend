@@ -17,6 +17,9 @@ export const getUserById = async (userId: number) => {
     const userResult = await prisma.user.findUnique({
         where: {
             userId: userId
+        },
+        include: {
+            Identity: true
         }
     });
     return userResult;
@@ -26,6 +29,9 @@ export const getUserByEmail = async (email: string) => {
     const userResult = await prisma.user.findUnique({
         where: {
             email
+        },
+        include: {
+            Identity: true
         }
     });
     return userResult;
@@ -36,7 +42,10 @@ export const updateUser = async (userId: number, user: User) => {
         where: {
             userId: userId
         },
-        data: user
+        data: user,
+        include: {
+            Identity: true
+        }
     });
     return userResult;
 }

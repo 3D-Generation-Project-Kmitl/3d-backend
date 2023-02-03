@@ -49,6 +49,8 @@ model Identity {
   idCardNumber    String         @db.VarChar(20)
   cardPicture     String         @db.VarChar(100)
   cardFacePicture String         @db.VarChar(100)
+  bankName        String         @db.VarChar(50)
+  bankAccount     String         @db.VarChar(50)
   status          IdentityStatus @default(PENDING)
   issue           String?        @db.VarChar(100)
   createdAt       DateTime       @default(now())

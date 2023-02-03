@@ -1,15 +1,14 @@
 import { identityController } from '../controllers';
 import { verifyToken, permit } from '../middleware/auth';
-import { validateRequest } from '../middleware/validation';
-import { CreateIdentityRequestDTO, UpdateIdentityRequestDTO, AdminUpdateIdentityRequestDTO } from '../dtos/identity';
 import { Router } from 'express';
+import upload from '../middleware/upload';
 
 const router = Router();
 
-router.post('/', [verifyToken, validateRequest(CreateIdentityRequestDTO)], identityController.create);
+router.post('/', [verifyToken, upload.fields([{ name: 'cardPicture' }, { name: 'cardFacePicture' }])], identityController.create);
 router.get('/', [verifyToken], identityController.get);
-router.put('/', [verifyToken, validateRequest(UpdateIdentityRequestDTO)], identityController.update);
-router.put('/admin', [verifyToken, permit('ADMIN'), validateRequest(AdminUpdateIdentityRequestDTO)], identityController.adminUpdate);
+router.put('/', [verifyToken, upload.fields([{ name: 'cardPicture' }, { name: 'cardFacePicture' }])], identityController.update);
+router.put('/admin', [verifyToken], identityController.adminUpdate);
 
 
 export default router;

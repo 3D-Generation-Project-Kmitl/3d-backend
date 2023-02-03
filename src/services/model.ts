@@ -48,6 +48,9 @@ export const getModelsByStoreId = async (userId: number, isProduct: boolean) => 
                     Product: null
                 }
             },
+            orderBy: {
+                modelId: 'desc'
+            },
         });
         return modelResult;
     } else {
@@ -56,6 +59,9 @@ export const getModelsByStoreId = async (userId: number, isProduct: boolean) => 
                 userId: userId,
                 type: ModelType.ADD || ModelType.CREATE,
                 Product: null
+            },
+            orderBy: {
+                modelId: 'desc'
             },
         });
         return modelResult;
@@ -67,7 +73,10 @@ export const getModelsByCustomerId = async (userId: number) => {
         where: {
             userId: userId,
             type: ModelType.BUY
-        }
+        },
+        orderBy: {
+            modelId: 'desc'
+        },
     });
     return modelResult;
 }
