@@ -16,6 +16,7 @@ const create = async (req: Request, res: Response, next: NextFunction) => {
         const cardPicture = files["cardPicture"];
         const cardFacePicture = files["cardFacePicture"];
         const identity = req.body;
+        identity.status = "PENDING"
         identity.userId = userId;
         identity.cardPicture = cardPicture;
         identity.cardFacePicture = cardFacePicture;
@@ -42,7 +43,17 @@ const get = async (req: Request, res: Response, next: NextFunction) => {
 const update = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const userId = req.userId;
+        const files = filePath2FullURL(req);
+        if (!files) {
+            throw new ApplicationError(CommonError.INVALID_REQUEST);
+        }
+        console.log(files);
+        const cardPicture = files["cardPicture"];
+        const cardFacePicture = files["cardFacePicture"];
         const identity = req.body;
+        identity.status = "PENDING"
+        identity.cardPicture = cardPicture;
+        identity.cardFacePicture = cardFacePicture;
         const identityResult = await identityService.updateIdentity(userId, identity);
         sendResponse(res, identityResult, 200);
     } catch (error) {

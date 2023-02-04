@@ -10,7 +10,7 @@ const storage = multer.diskStorage({
         callback(null, dir);
     },
     filename: function (req, file, callback) {
-        callback(null, Date.now() + '_' + file.originalname.replaceAll(' ', ''));
+        callback(null, Date.now() + '_' + file.originalname.replaceAll(' ', '').slice(-20));
     },
 })
 
