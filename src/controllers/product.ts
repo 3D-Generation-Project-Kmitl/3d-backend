@@ -1,7 +1,7 @@
 import { ApplicationError } from '../errors/applicationError';
 import { CommonError } from '../errors/common';
 import { sendResponse } from '../utils/response';
-import { productService } from '../services';
+import { productService, userService } from '../services';
 
 import { Request, Response, NextFunction } from 'express';
 
@@ -20,6 +20,16 @@ const create = async (req: Request, res: Response, next: NextFunction) => {
 const getProducts = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const products = await productService.getProducts();
+        sendResponse(res, products, 200);
+    } catch (error) {
+        return next(error)
+    }
+}
+
+const getProductsByStoreId = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const storeId = Number(req.params.storeId);
+        const products = await userService.getUserByIdWithProducts(storeId);
         sendResponse(res, products, 200);
     } catch (error) {
         return next(error)
@@ -91,6 +101,7 @@ const remove = async (req: Request, res: Response, next: NextFunction) => {
 export default {
     create,
     getProducts,
+    getProductsByStoreId,
     searchProduct,
     getProduct,
     update,

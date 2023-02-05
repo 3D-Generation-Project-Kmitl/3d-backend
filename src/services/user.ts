@@ -31,6 +31,22 @@ export const getUserByEmail = async (email: string) => {
     return userResult;
 }
 
+export const getUserByIdWithProducts = async (userId: number) => {
+    const userResult = await prisma.user.findUnique({
+        where: {
+            userId: userId
+        },
+        include: {
+            Product: {
+                include: {
+                    Model: true,
+                }
+            }
+        }
+    });
+    return userResult;
+}
+
 export const updateUser = async (userId: number, user: User) => {
     const userResult = await prisma.user.update({
         where: {

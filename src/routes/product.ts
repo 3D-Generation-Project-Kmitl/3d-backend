@@ -7,6 +7,7 @@ import { Router } from 'express';
 const router = Router();
 
 router.get('/all', productController.getProducts);
+router.get('/store/:storeId', productController.getProductsByStoreId);
 router.get('/search', productController.searchProduct);
 router.get('/:id', productController.getProduct);
 router.post('/', [verifyToken, validateRequest(CreateProductRequestDTO)], productController.create);
