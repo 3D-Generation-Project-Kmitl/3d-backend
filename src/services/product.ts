@@ -33,7 +33,8 @@ export const getProduct = async (id: number) => {
         },
         include: {
             Model: true,
-            User: true
+            User: true,
+            Category: true
         }
     });
 
