@@ -26,6 +26,16 @@ const getProducts = async (req: Request, res: Response, next: NextFunction) => {
     }
 }
 
+const getMyProducts = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const userId = Number(req.userId);
+        const products = await productService.getMyProducts(userId);
+        sendResponse(res, products, 200);
+    } catch (error) {
+        return next(error)
+    }
+}
+
 const getProductsByStoreId = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const storeId = Number(req.params.storeId);
@@ -101,6 +111,7 @@ const remove = async (req: Request, res: Response, next: NextFunction) => {
 export default {
     create,
     getProducts,
+    getMyProducts,
     getProductsByStoreId,
     searchProduct,
     getProduct,

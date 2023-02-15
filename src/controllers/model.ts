@@ -82,6 +82,25 @@ const update = async (req: Request, res: Response, next: NextFunction) => {
     }
 }
 
+const updateModelFromReconstruction = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { modelId, model, picture } = req.body;
+
+        const modelResult = await modelService.getModelById(modelId);
+
+        if (!modelResult) {
+            throw new ApplicationError(CommonError.RESOURCE_NOT_FOUND);
+        }
+
+        const modelUpdated = await modelService.updateModel(modelId, model, picture);
+
+        sendResponse(res, modelUpdated, 200);
+    } catch (error) {
+        return next(error);
+    }
+
+}
+
 
 const remove = async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -98,6 +117,7 @@ export default {
     getByCustomerId,
     getModelsByStoreId,
     update,
+    updateModelFromReconstruction,
     remove
 }
 

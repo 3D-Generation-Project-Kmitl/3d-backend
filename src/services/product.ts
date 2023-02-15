@@ -1,8 +1,13 @@
 import prisma from '../utils/prisma';
+import { ProductStatus } from '@prisma/client';
 
 export const createProduct = async (product: any) => {
     const newProduct = await prisma.product.create({
-        data: product
+        data: product,
+        include: {
+            Model: true,
+            Category: true
+        }
     });
     return newProduct;
 }
@@ -14,11 +19,32 @@ export const getProducts = async () => {
                 views: 'desc'
             },
             include: {
-                Model: true
+                Model: true,
+                Category: true
+            },
+            where: {
+                status: ProductStatus.AVAILABLE
             }
         }
     );
     return products;
+}
+
+export const getMyProducts = async (userId: number) => {
+    const products = await prisma.product.findMany({
+        where: {
+            userId: userId
+        },
+        include: {
+            Model: true,
+            Category: true
+        },
+        orderBy: {
+            createdAt: 'desc'
+        }
+    });
+    return products;
+
 }
 
 export const getProduct = async (id: number) => {
@@ -46,7 +72,11 @@ export const updateProduct = async (id: number, product: any) => {
         where: {
             productId: id
         },
-        data: product
+        data: product,
+        include: {
+            Model: true,
+            Category: true
+        }
     });
     return updatedProduct;
 }
@@ -62,6 +92,7 @@ export const removeProduct = async (id: number) => {
 export const searchProduct = async (keyword: string) => {
     const products = await prisma.product.findMany({
         where: {
+            status: ProductStatus.AVAILABLE,
             OR: [
                 {
                     name: {
@@ -87,7 +118,8 @@ export const searchProduct = async (keyword: string) => {
 
         },
         include: {
-            Model: true
+            Model: true,
+            Category: true
         }
     });
     return products;

@@ -1,5 +1,5 @@
 import prisma from '../utils/prisma';
-import { User } from '@prisma/client';
+import { ProductStatus, User } from '@prisma/client';
 
 export const createUser = async (user: User) => {
     const userResult = await prisma.user.create({
@@ -40,6 +40,9 @@ export const getUserByIdWithProducts = async (userId: number) => {
             Product: {
                 include: {
                     Model: true,
+                },
+                where: {
+                    status: ProductStatus.AVAILABLE
                 }
             }
         }
