@@ -43,7 +43,11 @@ export const getModelsByStoreId = async (userId: number, isProduct: boolean) => 
         const modelResult = await prisma.model.findMany({
             where: {
                 userId: userId,
-                type: ModelType.ADD || ModelType.CREATE,
+                OR: [{
+                    type: ModelType.ADD
+                }, {
+                    type: ModelType.CREATE
+                }],
                 NOT: {
                     Product: null
                 }
@@ -57,7 +61,11 @@ export const getModelsByStoreId = async (userId: number, isProduct: boolean) => 
         const modelResult = await prisma.model.findMany({
             where: {
                 userId: userId,
-                type: ModelType.ADD || ModelType.CREATE,
+                OR: [{
+                    type: ModelType.ADD
+                }, {
+                    type: ModelType.CREATE
+                }],
                 Product: null
             },
             orderBy: {
