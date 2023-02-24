@@ -68,6 +68,11 @@ export const getUserByIdWithProducts = async (userId: number) => {
                 where: {
                     status: ProductStatus.AVAILABLE
                 }
+            },
+            _count: {
+                select: {
+                    Followers: true,
+                }
             }
         }
     });
