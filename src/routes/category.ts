@@ -9,7 +9,7 @@ const router = Router();
 
 router.get('/all', categoryController.getCategories);
 router.post('/', [verifyToken, upload.single('picture'), validateRequest(CreateCategoryRequestDTO)], categoryController.create);
-router.put('/:id', [verifyToken, upload.single('picture'), validateRequest(UpdateCategoryRequestDTO)], categoryController.update);
+router.put('/:id', [verifyToken, upload.single('picture')], categoryController.update);
 router.delete('/:id', [verifyToken], categoryController.remove);
 
 export default router;

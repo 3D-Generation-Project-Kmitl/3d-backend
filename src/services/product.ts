@@ -6,7 +6,13 @@ export const createProduct = async (product: any) => {
         data: product,
         include: {
             Model: true,
-            Category: true
+            Category: true,
+            _count: {
+                select: {
+                    OrderProduct: true,
+                    Favorite: true,
+                }
+            }
         }
     });
     return newProduct;
@@ -37,7 +43,13 @@ export const getMyProducts = async (userId: number) => {
         },
         include: {
             Model: true,
-            Category: true
+            Category: true,
+            _count: {
+                select: {
+                    OrderProduct: true,
+                    Favorite: true,
+                }
+            }
         },
         orderBy: {
             createdAt: 'desc'
@@ -75,7 +87,13 @@ export const updateProduct = async (id: number, product: any) => {
         data: product,
         include: {
             Model: true,
-            Category: true
+            Category: true,
+            _count: {
+                select: {
+                    OrderProduct: true,
+                    Favorite: true,
+                }
+            }
         }
     });
     return updatedProduct;

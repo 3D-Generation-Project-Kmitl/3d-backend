@@ -15,19 +15,42 @@ export const createWalletTransaction = async (userId: number, amount: number, ty
 }
 
 export const createWalletTransactionWithdraw = async (userId: number, amount: number) => {
-    await createWalletTransaction(userId, amount, WalletTransactionType.WITHDRAW, false);
+    const walletTransactionResult = await createWalletTransaction(userId, amount, WalletTransactionType.WITHDRAW, false);
+    return walletTransactionResult;
 }
 
 export const createWalletTransactionOrder = async (carts: CartProduct[]) => {
-    carts.forEach(async (item) => {
-        await createWalletTransaction(item.Product.userId, item.Product.price, WalletTransactionType.ORDER, true);
+    type UserTransaction = {
+        userId: number,
+        totalPrice: number
+    }
+    const userTransactions: UserTransaction[] = [];
+    carts.forEach((item) => {
+        const userTransaction = userTransactions.find((userTransaction) => userTransaction.userId === item.Product.userId);
+        if (userTransaction) {
+            userTransaction.totalPrice += item.Product.price;
+        } else {
+            userTransactions.push({
+                userId: item.Product.userId,
+                totalPrice: item.Product.price
+            });
+        }
     });
+    userTransactions.forEach(async (item) => {
+        await createWalletTransaction(item.userId, item.totalPrice, WalletTransactionType.ORDER, true);
+    });
+    // carts.forEach(async (item) => {
+    //     await createWalletTransaction(item.Product.userId, item.Product.price, WalletTransactionType.ORDER, true);
+    // });
 }
 
 export const getWalletTransactions = async (userId: number) => {
     const walletTransactionResult = await prisma.walletTransaction.findMany({
         where: {
             userId: userId
+        },
+        orderBy: {
+            createdAt: 'desc'
         }
     });
     const balance = await getBalance(walletTransactionResult);
@@ -37,7 +60,7 @@ export const getWalletTransactions = async (userId: number) => {
     };
 }
 
-const getBalance = async (walletTransactions: WalletTransaction[]) => {
+export const getBalance = async (walletTransactions: WalletTransaction[]) => {
     let balance = 0;
     walletTransactions.forEach((item) => {
         if (item.type === WalletTransactionType.WITHDRAW) balance -= item.amountMoney;

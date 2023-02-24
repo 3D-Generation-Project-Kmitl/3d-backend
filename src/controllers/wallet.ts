@@ -15,8 +15,12 @@ const withdraw = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const amount = Number(req.body.amount);
         const userId = req.userId;
-        await walletService.createWalletTransactionWithdraw(userId, amount);
-        sendResponse(res, {}, 200);
+        const walletTransactionResult = await walletService.getWalletTransactions(userId);
+        if (walletTransactionResult.balance < amount) {
+            return next(new Error('Not enough money'));
+        }
+        const result = await walletService.createWalletTransactionWithdraw(userId, amount);
+        sendResponse(res, result, 200);
     } catch (err) {
         return next(err);
     }
