@@ -32,6 +32,8 @@ model User {
   ReportProduct     ReportProduct[]
   Model             Model[]
   Otp               Otp[]
+  Followers         Follow[]            @relation("FollowersToUser")
+  Following         Follow[]            @relation("FollowingFromUser")
 }
 
 model OauthRefreshToken {
@@ -190,6 +192,17 @@ model Otp {
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @updatedAt
   User       User      @relation(fields: [userId], references: [userId])
+}
+
+model Follow {
+  followerId Int
+  followedId Int
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  Follower   User     @relation("FollowingFromUser", fields: [followerId], references: [userId])
+  Followed   User     @relation("FollowersToUser", fields: [followedId], references: [userId])
+
+  @@id([followerId, followedId])
 }
 
 enum Role {

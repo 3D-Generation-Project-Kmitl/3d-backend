@@ -3,7 +3,15 @@ import { ProductStatus, User } from '@prisma/client';
 
 export const createUser = async (user: User) => {
     const userResult = await prisma.user.create({
-        data: user
+        data: user,
+        include: {
+            _count: {
+                select: {
+                    Followers: true,
+                    Following: true
+                }
+            }
+        }
     });
     return userResult;
 }
@@ -17,6 +25,14 @@ export const getUserById = async (userId: number) => {
     const userResult = await prisma.user.findUnique({
         where: {
             userId: userId
+        },
+        include: {
+            _count: {
+                select: {
+                    Followers: true,
+                    Following: true
+                }
+            }
         }
     });
     return userResult;
@@ -26,6 +42,14 @@ export const getUserByEmail = async (email: string) => {
     const userResult = await prisma.user.findUnique({
         where: {
             email
+        },
+        include: {
+            _count: {
+                select: {
+                    Followers: true,
+                    Following: true
+                }
+            }
         }
     });
     return userResult;
@@ -55,7 +79,15 @@ export const updateUser = async (userId: number, user: User) => {
         where: {
             userId: userId
         },
-        data: user
+        data: user,
+        include: {
+            _count: {
+                select: {
+                    Followers: true,
+                    Following: true
+                }
+            }
+        }
 
     });
     return userResult;

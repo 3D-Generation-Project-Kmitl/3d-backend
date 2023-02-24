@@ -18,7 +18,7 @@ const getUsers = async (req: Request, res: Response, next: NextFunction) => {
 const getUser = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const id = Number(req.params.id)
-        const user = userService.getUserById(id);
+        const user = await userService.getUserById(id);
         if (!user) {
             return next(new ApplicationError(CommonError.RESOURCE_NOT_FOUND));
         }
