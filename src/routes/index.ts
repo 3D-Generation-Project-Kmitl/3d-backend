@@ -10,6 +10,7 @@ import favoriteRouter from './favorite';
 import paymentRouter from './payment';
 import orderRouter from './order';
 import walletRouter from './wallet';
+import followRouter from './follow';
 
 const router: Router = Router();
 
@@ -24,5 +25,6 @@ router.use('/favorite', favoriteRouter);
 router.use('/payment', paymentRouter);
 router.use('/order', orderRouter);
 router.use('/wallet', walletRouter);
+router.use('/follow', followRouter);
 
 export default router;

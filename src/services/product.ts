@@ -71,7 +71,15 @@ export const getProduct = async (id: number) => {
         },
         include: {
             Model: true,
-            User: true,
+            User: {
+                include: {
+                    _count: {
+                        select: {
+                            Followers: true,
+                        }
+                    }
+                }
+            },
             Category: true
         }
     });
