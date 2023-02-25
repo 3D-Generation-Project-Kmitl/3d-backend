@@ -1,9 +1,13 @@
 import { ApplicationError } from '../errors/applicationError';
 import { CommonError } from '../errors/common';
 import { sendResponse } from '../utils/response';
-import { productService, userService } from '../services';
+import { productService, followService, userService, notificationService } from '../services';
+
 
 import { Request, Response, NextFunction } from 'express';
+import { Follow, User } from '@prisma/client';
+
+type Follower = Follow & { Follower: User };
 
 const create = async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -12,6 +16,19 @@ const create = async (req: Request, res: Response, next: NextFunction) => {
         product.userId = userId;
         const newProduct = await productService.createProduct(product);
         sendResponse(res, newProduct, 201);
+        const followers = await followService.getFollowers(userId);
+        followers.forEach((follower: Follower) => {
+            const { Follower } = follower;
+            const { userId, name } = Follower;
+            const notification = {
+                userId: userId,
+                picture: newProduct.Model.picture!,
+                title: `สินค้าใหม่จาก ${name}`,
+                description: `สินค้า ${product.name} ถูกเพิ่มเข้ามาในร้านค้าแล้ว`,
+                link: `product/${newProduct.productId}`
+            }
+            notificationService.createNotification(notification);
+        });
     } catch (error) {
         return next(error)
     }

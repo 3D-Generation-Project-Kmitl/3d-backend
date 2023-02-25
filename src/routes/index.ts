@@ -11,6 +11,7 @@ import paymentRouter from './payment';
 import orderRouter from './order';
 import walletRouter from './wallet';
 import followRouter from './follow';
+import notificationRouter from './notification';
 
 const router: Router = Router();
 
@@ -26,5 +27,6 @@ router.use('/payment', paymentRouter);
 router.use('/order', orderRouter);
 router.use('/wallet', walletRouter);
 router.use('/follow', followRouter);
+router.use('/notification', notificationRouter);
 
 export default router;
