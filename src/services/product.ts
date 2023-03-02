@@ -145,7 +145,13 @@ export const searchProduct = async (keyword: string) => {
         },
         include: {
             Model: true,
-            Category: true
+            Category: true,
+            _count: {
+                select: {
+                    OrderProduct: true,
+                    Favorite: true,
+                }
+            }
         }
     });
     return products;

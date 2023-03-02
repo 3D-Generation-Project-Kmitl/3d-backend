@@ -106,6 +106,9 @@ const remove = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const id = Number(req.params.id);
         const modelResult = await modelService.removeModel(id);
+        if (!modelResult) {
+            throw new ApplicationError(CommonError.INVALID_REQUEST);
+        }
         sendResponse(res, modelResult, 200);
     } catch (error) {
         return next(error);

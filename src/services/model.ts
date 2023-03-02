@@ -103,10 +103,29 @@ export const updateModel = async (id: number, model: string, picture: string) =>
 }
 
 export const removeModel = async (id: number) => {
-    const modelResult = await prisma.model.delete({
+    if (!isModelProduct(id)) {
+        const modelResult = await prisma.model.delete({
+            where: {
+                modelId: id,
+            },
+        });
+        return modelResult;
+    }
+    return null;
+}
+
+export const isModelProduct = async (id: number) => {
+    const modelResult = await prisma.model.findUnique({
         where: {
             modelId: id
+        },
+        select: {
+            Product: true
         }
     });
-    return modelResult;
+    if (modelResult?.Product) {
+        return true;
+    } else {
+        return false;
+    }
 }
