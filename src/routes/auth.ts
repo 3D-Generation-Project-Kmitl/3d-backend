@@ -8,6 +8,7 @@ const router = Router();
 
 router.post('/register', [validateRequest(RegisterRequestDTO)], authController.register)
 router.post('/login', [validateRequest(LoginRequestDTO)], authController.login)
+router.post('/adminLogin', [validateRequest(LoginRequestDTO)], authController.adminLogin);
 router.post('/logout', [verifyToken], authController.logout)
 router.post('/getAccessToken', authController.getAccessToken);
 router.put('/updatePassword', [verifyToken, validateRequest(UpdatePasswordRequestDTO)], authController.updatePassword);

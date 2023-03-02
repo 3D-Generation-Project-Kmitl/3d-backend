@@ -110,6 +110,41 @@ const login = async (req: Request, res: Response, next: NextFunction) => {
     }
 }
 
+const adminLogin = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { email, password } = req.body;
+        const userResult = await userService.getUserByEmail(email);
+
+        if (!userResult) {
+            return next(new ApplicationError(CommonError.UNAUTHORIZED));
+        }
+
+        if (userResult.role !== 'ADMIN') {
+            return next(new ApplicationError(CommonError.UNAUTHORIZED));
+        }
+
+        const isPasswordValid = bcrypt.compareSync(password, userResult.password);
+        if (!isPasswordValid) {
+            return next(new ApplicationError(CommonError.UNAUTHORIZED));
+        }
+
+        const accessToken = authToken.GenerateAccessToken(userResult.userId);
+        const refreshToken = await authToken.GenerateRefreshToken();
+
+        await authService.updateRefreshToken(userResult.userId, refreshToken);
+
+        // Remove unused password from userResult
+        const { password: unusedPassword, ...userProfile } = userResult;
+
+        res.cookie('accessToken', accessToken, cookieConfig);
+        res.cookie('refreshToken', refreshToken, cookieConfig);
+
+        sendResponse(res, userProfile, 200);
+    } catch (error) {
+        return next(error);
+    }
+}
+
 const logout = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const userId = req.userId;
@@ -287,6 +322,7 @@ export default {
     validateToken,
     register,
     login,
+    adminLogin,
     logout,
     getAccessToken,
     updatePassword,
