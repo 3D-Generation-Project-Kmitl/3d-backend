@@ -1,6 +1,8 @@
-FROM node:16
+FROM node:18
 
 WORKDIR /usr/src/app
+
+
 
 COPY .env ./
 COPY package*.json ./
@@ -10,6 +12,7 @@ COPY prisma/schema.prisma ./prisma/
 RUN npx prisma generate
 
 COPY . .
+
 
 RUN npm run build
 
