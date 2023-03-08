@@ -129,3 +129,19 @@ export const isModelProduct = async (id: number) => {
         return false;
     }
 }
+
+export const countModels = async () => {
+    const count = await prisma.model.count();
+    return count;
+}
+
+export const countModelsByDays = async (days: number) => {
+    const count = await prisma.model.count({
+        where: {
+            createdAt: {
+                gte: new Date(new Date().setDate(new Date().getDate() - days))
+            }
+        }
+    });
+    return count;
+}

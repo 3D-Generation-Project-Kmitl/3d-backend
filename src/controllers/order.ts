@@ -29,8 +29,22 @@ const getOrderById = async (req: Request, res: Response, next: NextFunction) => 
     }
 }
 
+const countOrders = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const count = await orderService.countOrders();
+        const countToday = await orderService.countOrdersByDays(1);
+        sendResponse(res, {
+            count,
+            countToday
+        }, 200);
+    } catch (err) {
+        return next(err);
+    }
+}
+
 export default {
     create,
     getOrdersByUserId,
-    getOrderById
+    getOrderById,
+    countOrders
 }

@@ -124,6 +124,19 @@ const remove = async (req: Request, res: Response, next: NextFunction) => {
     }
 }
 
+const countProducts = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const count = await productService.countProducts();
+        const countToday = await productService.countProductsByDays(1);
+        sendResponse(res, {
+            count,
+            countToday
+        }, 200);
+    } catch (error) {
+        return next(error)
+    }
+}
+
 
 export default {
     create,
@@ -133,5 +146,6 @@ export default {
     searchProduct,
     getProduct,
     update,
-    remove
+    remove,
+    countProducts
 }

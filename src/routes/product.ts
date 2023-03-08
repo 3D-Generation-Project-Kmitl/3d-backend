@@ -6,6 +6,7 @@ import { Router } from 'express';
 
 const router = Router();
 
+router.get('/count', [verifyToken, permit("ADMIN")], productController.countProducts);
 router.get('/all', productController.getProducts);
 router.get('/myProducts', [verifyToken], productController.getMyProducts);
 router.get('/store/:storeId', productController.getProductsByStoreId);

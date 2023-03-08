@@ -129,3 +129,19 @@ export const removeUser = async (userId: number) => {
 
     return user;
 }
+
+export const countUsers = async () => {
+    const count = await prisma.user.count();
+    return count;
+}
+
+export const countUsersByDays = async (days: number) => {
+    const count = await prisma.user.count({
+        where: {
+            createdAt: {
+                gte: new Date(new Date().setDate(new Date().getDate() - days))
+            }
+        }
+    });
+    return count;
+}

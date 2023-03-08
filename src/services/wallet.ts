@@ -60,6 +60,16 @@ export const getWalletTransactions = async (userId: number) => {
     };
 }
 
+export const getAllWalletTransactions = async () => {
+    const walletTransactionResult = await prisma.walletTransaction.findMany({
+        orderBy: {
+            createdAt: 'desc'
+        },
+        take: 10
+    });
+    return walletTransactionResult;
+}
+
 export const getBalance = async (walletTransactions: WalletTransaction[]) => {
     let balance = 0;
     walletTransactions.forEach((item) => {

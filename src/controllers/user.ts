@@ -59,9 +59,23 @@ const remove = async (req: Request, res: Response, next: NextFunction) => {
     }
 }
 
+const countUsers = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const count = await userService.countUsers();
+        const countToday = await userService.countUsersByDays(1);
+        sendResponse(res, {
+            count,
+            countToday
+        }, 200);
+    } catch (error: any) {
+        return next(error);
+    }
+}
+
 export default {
     getUsers,
     getUser,
     update,
-    remove
+    remove,
+    countUsers
 }

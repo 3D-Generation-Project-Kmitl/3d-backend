@@ -11,6 +11,15 @@ const getWalletTransactions = async (req: Request, res: Response, next: NextFunc
     }
 }
 
+const getAllWalletTransactions = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const walletTransactions = await walletService.getAllWalletTransactions();
+        sendResponse(res, walletTransactions, 200);
+    } catch (err) {
+        return next(err);
+    }
+}
+
 const withdraw = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const amount = Number(req.body.amount);
@@ -28,5 +37,6 @@ const withdraw = async (req: Request, res: Response, next: NextFunction) => {
 
 export default {
     getWalletTransactions,
+    getAllWalletTransactions,
     withdraw
 }

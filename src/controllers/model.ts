@@ -115,12 +115,26 @@ const remove = async (req: Request, res: Response, next: NextFunction) => {
     }
 }
 
+const countModels = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const count = await modelService.countModels();
+        const countToday = await modelService.countModelsByDays(1);
+        sendResponse(res, {
+            count,
+            countToday
+        }, 200);
+    } catch (err) {
+        return next(err);
+    }
+}
+
 export default {
     create,
     getByCustomerId,
     getModelsByStoreId,
     update,
     updateModelFromReconstruction,
-    remove
+    remove,
+    countModels
 }
 
