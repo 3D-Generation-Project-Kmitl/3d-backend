@@ -7,6 +7,7 @@ import { Router } from 'express';
 
 const router = Router();
 
+router.get('/product', categoryController.getCategoriesCountProducts);
 router.get('/all', categoryController.getCategories);
 router.post('/', [verifyToken, upload.single('picture'), validateRequest(CreateCategoryRequestDTO)], categoryController.create);
 router.put('/:id', [verifyToken, upload.single('picture')], categoryController.update);

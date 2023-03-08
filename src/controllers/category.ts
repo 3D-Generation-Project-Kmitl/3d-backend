@@ -30,6 +30,15 @@ const getCategories = async (req: Request, res: Response, next: NextFunction) =>
     }
 }
 
+const getCategoriesCountProducts = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const categoryResult = await categoryService.getCategoriesCountProducts();
+        sendResponse(res, categoryResult, 200);
+    } catch (error) {
+        return next(error);
+    }
+}
+
 const update = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const id = Number(req.params.id);
@@ -56,6 +65,7 @@ const remove = async (req: Request, res: Response, next: NextFunction) => {
 export default {
     create,
     getCategories,
+    getCategoriesCountProducts,
     update,
     remove
 }

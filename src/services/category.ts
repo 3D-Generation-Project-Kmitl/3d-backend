@@ -15,6 +15,21 @@ export const getCategories = async () => {
     return categoryResult;
 }
 
+export const getCategoriesCountProducts = async () => {
+    const categoryResult = await prisma.category.findMany(
+        {
+            include: {
+                _count: {
+                    select: {
+                        Product: true
+                    }
+                }
+            }
+        }
+    );
+    return categoryResult;
+}
+
 export const updateCategory = async (id: number, category: any, picture: any) => {
     const categoryResult = await prisma.category.update({
         where: {
