@@ -19,6 +19,7 @@ model User {
   dateOfBirth       DateTime?           @db.Date
   isVerified        Boolean             @default(false)
   role              Role                @default(USER)
+  isBan             Boolean             @default(false)
   createdAt         DateTime            @default(now())
   updatedAt         DateTime            @updatedAt
   OauthRefreshToken OauthRefreshToken?
@@ -143,6 +144,7 @@ model WalletTransaction {
   amountMoney         Float
   type                WalletTransactionType
   isCompleted         Boolean               @default(false)
+  evidence            String?               @db.VarChar(100)
   createdAt           DateTime              @default(now())
   updatedAt           DateTime              @updatedAt
   User                User                  @relation(fields: [userId], references: [userId])
@@ -165,6 +167,7 @@ model ReportProduct {
   userId    Int
   productId Int
   detail    String   @db.VarChar(500)
+  isClosed  Boolean  @default(false)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   User      User     @relation(fields: [userId], references: [userId])
