@@ -5,6 +5,9 @@ import { Router } from 'express';
 
 const router = Router();
 
+router.get('/admin', [verifyToken, permit('ADMIN')], userController.adminGetUsersWithIdentity);
+router.patch('/admin/ban', [verifyToken, permit('ADMIN')], userController.adminBanUser);
+router.patch('/admin/unBan', [verifyToken, permit('ADMIN')], userController.adminUnBanUser);
 router.get('/count', [verifyToken, permit("ADMIN")], userController.countUsers);
 router.get('/all', [verifyToken, permit('ADMIN')], userController.getUsers);
 router.get('/:id', userController.getUser);
