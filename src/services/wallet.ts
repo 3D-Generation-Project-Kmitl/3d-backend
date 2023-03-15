@@ -1,21 +1,21 @@
 import prisma from '../utils/prisma';
-import { WalletTransactionType, WalletTransaction, Cart, Product, Model, } from '@prisma/client';
+import { WalletTransactionType, WalletTransaction, Cart, Product, Model, TransactionStatus, } from '@prisma/client';
 
 type CartProduct = Cart & { Product: Product & { Model: Model } };
-export const createWalletTransaction = async (userId: number, amount: number, type: WalletTransactionType, isCompleted: boolean) => {
+export const createWalletTransaction = async (userId: number, amount: number, type: WalletTransactionType, status: TransactionStatus) => {
     const walletTransactionResult = await prisma.walletTransaction.create({
         data: {
             userId: userId,
             amountMoney: amount,
             type: type,
-            isCompleted: isCompleted
+            status: status
         }
     });
     return walletTransactionResult;
 }
 
 export const createWalletTransactionWithdraw = async (userId: number, amount: number) => {
-    const walletTransactionResult = await createWalletTransaction(userId, amount, WalletTransactionType.WITHDRAW, false);
+    const walletTransactionResult = await createWalletTransaction(userId, amount, WalletTransactionType.WITHDRAW, TransactionStatus.PENDING);
     return walletTransactionResult;
 }
 
@@ -37,11 +37,8 @@ export const createWalletTransactionOrder = async (carts: CartProduct[]) => {
         }
     });
     userTransactions.forEach(async (item) => {
-        await createWalletTransaction(item.userId, item.totalPrice, WalletTransactionType.ORDER, true);
+        await createWalletTransaction(item.userId, item.totalPrice, WalletTransactionType.ORDER, TransactionStatus.APPROVED);
     });
-    // carts.forEach(async (item) => {
-    //     await createWalletTransaction(item.Product.userId, item.Product.price, WalletTransactionType.ORDER, true);
-    // });
 }
 
 export const getWalletTransactions = async (userId: number) => {
@@ -79,3 +76,36 @@ export const getBalance = async (walletTransactions: WalletTransaction[]) => {
     return balance;
 }
 
+export const adminGetWithdrawWalletTransactions = async () => {
+    const walletTransactionResult = await prisma.walletTransaction.findMany({
+        where: {
+            type: WalletTransactionType.WITHDRAW,
+            status: TransactionStatus.PENDING
+        },
+        orderBy: {
+            createdAt: 'desc'
+        },
+        include: {
+            User: {
+                include: {
+                    Identity: true
+                }
+            }
+
+        }
+    });
+    return walletTransactionResult;
+}
+
+export const adminUpdateWalletTransaction = async (walletTransactionId: number, status: TransactionStatus, evidence?: string) => {
+    const walletTransactionResult = await prisma.walletTransaction.update({
+        where: {
+            walletTransactionId: walletTransactionId
+        },
+        data: {
+            status: status,
+            evidence: evidence
+        }
+    });
+    return walletTransactionResult;
+}

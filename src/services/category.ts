@@ -11,7 +11,11 @@ export const createCategory = async (category: any, picture: any) => {
 }
 
 export const getCategories = async () => {
-    const categoryResult = await prisma.category.findMany();
+    const categoryResult = await prisma.category.findMany({
+        orderBy: {
+            categoryId: 'asc'
+        }
+    });
     return categoryResult;
 }
 
@@ -24,6 +28,9 @@ export const getCategoriesCountProducts = async () => {
                         Product: true
                     }
                 }
+            },
+            orderBy: {
+                categoryId: 'asc'
             }
         }
     );

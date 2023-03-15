@@ -143,7 +143,7 @@ model WalletTransaction {
   userId              Int
   amountMoney         Float
   type                WalletTransactionType
-  isCompleted         Boolean               @default(false)
+  status              TransactionStatus     @default(PENDING)
   evidence            String?               @db.VarChar(100)
   createdAt           DateTime              @default(now())
   updatedAt           DateTime              @updatedAt
@@ -224,6 +224,12 @@ enum ProductStatus {
 enum WalletTransactionType {
   ORDER
   WITHDRAW
+}
+
+enum TransactionStatus {
+  PENDING
+  APPROVED
+  REJECTED
 }
 
 enum IdentityStatus {
