@@ -137,6 +137,26 @@ const countProducts = async (req: Request, res: Response, next: NextFunction) =>
     }
 }
 
+const adminGetProducts = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const products = await productService.adminGetProducts();
+        sendResponse(res, products, 200);
+    } catch (error) {
+        return next(error)
+    }
+}
+
+const adminUpdateStatusProduct = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { productId, status } = req.body;
+        const updatedProduct = await productService.adminUpdateStatusProduct(productId, status);
+        sendResponse(res, updatedProduct, 200);
+    } catch (error) {
+        return next(error)
+    }
+}
+
+
 
 export default {
     create,
@@ -147,5 +167,7 @@ export default {
     getProduct,
     update,
     remove,
-    countProducts
+    countProducts,
+    adminGetProducts,
+    adminUpdateStatusProduct
 }
