@@ -156,3 +156,49 @@ export const searchProduct = async (keyword: string) => {
     });
     return products;
 }
+
+export const countProducts = async () => {
+    const count = await prisma.product.count();
+    return count;
+}
+
+export const countProductsByDays = async (days: number) => {
+    const count = await prisma.product.count({
+        where: {
+            createdAt: {
+                gte: new Date(new Date().setDate(new Date().getDate() - days))
+            }
+        }
+    });
+    return count;
+}
+
+export const adminGetProducts = async () => {
+    const products = await prisma.product.findMany({
+        include: {
+            Model: true,
+            User: true
+        },
+        orderBy: {
+            productId: 'desc'
+        }
+    });
+    return products;
+}
+
+export const adminUpdateStatusProduct = async (id: number, status: ProductStatus) => {
+    const product = await prisma.product.update({
+        where: {
+            productId: id
+        },
+        data: {
+            status: status
+        },
+        include: {
+            Model: true,
+            User: true
+        }
+    });
+    return product;
+}
+

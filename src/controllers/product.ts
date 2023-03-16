@@ -124,6 +124,39 @@ const remove = async (req: Request, res: Response, next: NextFunction) => {
     }
 }
 
+const countProducts = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const count = await productService.countProducts();
+        const countToday = await productService.countProductsByDays(1);
+        sendResponse(res, {
+            count,
+            countToday
+        }, 200);
+    } catch (error) {
+        return next(error)
+    }
+}
+
+const adminGetProducts = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const products = await productService.adminGetProducts();
+        sendResponse(res, products, 200);
+    } catch (error) {
+        return next(error)
+    }
+}
+
+const adminUpdateStatusProduct = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { productId, status } = req.body;
+        const updatedProduct = await productService.adminUpdateStatusProduct(productId, status);
+        sendResponse(res, updatedProduct, 200);
+    } catch (error) {
+        return next(error)
+    }
+}
+
+
 
 export default {
     create,
@@ -133,5 +166,8 @@ export default {
     searchProduct,
     getProduct,
     update,
-    remove
+    remove,
+    countProducts,
+    adminGetProducts,
+    adminUpdateStatusProduct
 }

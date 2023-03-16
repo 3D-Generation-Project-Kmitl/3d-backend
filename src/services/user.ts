@@ -129,3 +129,43 @@ export const removeUser = async (userId: number) => {
 
     return user;
 }
+
+export const getUsersWithIdentity = async () => {
+    const user = await prisma.user.findMany({
+        include: {
+            Identity: true
+        },
+        orderBy: {
+            userId: 'desc'
+        }
+    });
+    return user;
+}
+
+export const banUser = async (userId: number, isBan: boolean) => {
+    const user = await prisma.user.update({
+        where: {
+            userId: userId
+        },
+        data: {
+            isBan: isBan
+        }
+    });
+    return user;
+}
+
+export const countUsers = async () => {
+    const count = await prisma.user.count();
+    return count;
+}
+
+export const countUsersByDays = async (days: number) => {
+    const count = await prisma.user.count({
+        where: {
+            createdAt: {
+                gte: new Date(new Date().setDate(new Date().getDate() - days))
+            }
+        }
+    });
+    return count;
+}

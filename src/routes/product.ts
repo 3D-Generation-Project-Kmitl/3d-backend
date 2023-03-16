@@ -1,11 +1,12 @@
 import { productController } from '../controllers';
 import { verifyToken, permit } from '../middleware/auth';
-import { validateRequest } from '../middleware/validation';
-import { CreateProductRequestDTO, UpdateProductRequestDTO } from '../dtos/product';
 import { Router } from 'express';
 
 const router = Router();
 
+router.get('/admin', [verifyToken, permit("ADMIN")], productController.adminGetProducts);
+router.patch('/admin', [verifyToken, permit("ADMIN")], productController.adminUpdateStatusProduct);
+router.get('/count', [verifyToken, permit("ADMIN")], productController.countProducts);
 router.get('/all', productController.getProducts);
 router.get('/myProducts', [verifyToken], productController.getMyProducts);
 router.get('/store/:storeId', productController.getProductsByStoreId);

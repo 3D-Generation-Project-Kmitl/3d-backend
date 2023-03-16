@@ -11,3 +11,4 @@ export { default as orderController } from './order';
 export { default as walletController } from './wallet';
 export { default as followController } from './follow';
 export { default as notificationController } from './notification';
+export { default as reportController } from './report';

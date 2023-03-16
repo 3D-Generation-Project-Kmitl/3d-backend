@@ -8,6 +8,17 @@ export const createIdentity = async (identity: any) => {
     return identityResult;
 }
 
+export const getIdentitiesByStatus = async (
+    status: IdentityStatus,
+) => {
+    const identityResult = await prisma.identity.findMany({
+        where: {
+            status: status
+        }
+    });
+    return identityResult;
+}
+
 export const getIdentityByUserId = async (userId: number) => {
     const identityResult = await prisma.identity.findUnique({
         where: {

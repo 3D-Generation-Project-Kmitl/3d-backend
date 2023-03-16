@@ -59,9 +59,55 @@ const remove = async (req: Request, res: Response, next: NextFunction) => {
     }
 }
 
+const countUsers = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const count = await userService.countUsers();
+        const countToday = await userService.countUsersByDays(1);
+        sendResponse(res, {
+            count,
+            countToday
+        }, 200);
+    } catch (error: any) {
+        return next(error);
+    }
+}
+
+const adminGetUsersWithIdentity = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const users = await userService.getUsersWithIdentity();
+        sendResponse(res, users, 200);
+    } catch (error: any) {
+        return next(error);
+    }
+}
+
+const adminBanUser = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { userId } = req.body;
+        const user = await userService.banUser(userId, true);
+        sendResponse(res, user, 200);
+    } catch (error: any) {
+        return next(error);
+    }
+}
+
+const adminUnBanUser = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { userId } = req.body;
+        const user = await userService.banUser(userId, false);
+        sendResponse(res, user, 200);
+    } catch (error: any) {
+        return next(error);
+    }
+}
+
 export default {
     getUsers,
     getUser,
     update,
-    remove
+    remove,
+    countUsers,
+    adminGetUsersWithIdentity,
+    adminBanUser,
+    adminUnBanUser
 }

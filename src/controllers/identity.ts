@@ -61,6 +61,15 @@ const update = async (req: Request, res: Response, next: NextFunction) => {
     }
 }
 
+const adminGetPendingIdentities = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const identityResult = await identityService.getIdentitiesByStatus("PENDING");
+        sendResponse(res, identityResult, 200);
+    } catch (error) {
+        return next(error);
+    }
+}
+
 const adminUpdate = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { status, issue, userId } = req.body;
@@ -77,6 +86,7 @@ export default {
     create,
     get,
     update,
-    adminUpdate
+    adminUpdate,
+    adminGetPendingIdentities
 }
 

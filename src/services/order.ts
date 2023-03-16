@@ -90,3 +90,19 @@ const createOrderProduct = async (orderId: number, carts: CartProduct[]) => {
     return orderProducts;
 }
 
+export const countOrders = async () => {
+    const orders = await prisma.order.count();
+    return orders;
+}
+
+export const countOrdersByDays = async (days: number) => {
+    const orders = await prisma.order.count({
+        where: {
+            orderDateTime: {
+                gte: new Date(new Date().setDate(new Date().getDate() - days))
+            }
+        }
+    });
+    return orders;
+}
+

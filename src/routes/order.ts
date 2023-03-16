@@ -4,6 +4,7 @@ import { Router } from 'express';
 
 const router = Router();
 
+router.get('/count', [verifyToken], orderController.countOrders);
 router.get('/myOrders', [verifyToken], orderController.getOrdersByUserId);
 router.post('/', [verifyToken], orderController.create);
 router.get('/:id', [verifyToken], orderController.getOrderById);
