@@ -8,7 +8,7 @@
     "build": "rimraf ./dist && tsc",
     "start": "node ./dist/server.js",
     "start:pm2": "pm2-runtime start ecosystem.config.js",
-    "start:docker": "npm run build && npm run start:pm2",
+    "start:docker": "npm run build && node --inspect=0.0.0.0 dist/server.js",
     "db:generate": "npx prisma generate",
     "db:migrate": "npx prisma migrate deploy && npx prisma generate",
     "db:migrate:docker": "docker compose run api npm run db:migrate",
