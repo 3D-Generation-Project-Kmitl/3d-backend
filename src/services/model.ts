@@ -103,7 +103,8 @@ export const updateModel = async (id: number, model: string, picture: string) =>
 }
 
 export const removeModel = async (id: number) => {
-    if (!isModelProduct(id)) {
+    const isProduct = await isModelProduct(id);
+    if (!isProduct) {
         const modelResult = await prisma.model.delete({
             where: {
                 modelId: id,
@@ -123,10 +124,10 @@ export const isModelProduct = async (id: number) => {
             Product: true
         }
     });
-    if (modelResult?.Product) {
-        return true;
+    if (modelResult?.Product === null) {
+        return false
     } else {
-        return false;
+        return true;
     }
 }
 
