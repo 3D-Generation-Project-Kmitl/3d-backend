@@ -22,7 +22,7 @@ server.use('/api/payment/webhook', express.raw({ type: "*/*" }));
 server.use(express.json());
 server.use(cookieParser());
 server.use(express.urlencoded({ extended: true }));
-server.use('/api/uploads', express.static('uploads'));
+server.use('/uploads', express.static('uploads'));
 
 server.use('/api/health-check', (req, res) => {
     res.send(`I'm up and running on v1.0.0`);

@@ -4,7 +4,7 @@ const filePath2FullURL = (req: Request) => {
     if (req.file) {
         const path = req.file?.path.replaceAll('\\', '/');
         if (path === undefined) return null;
-        const url = req.protocol + '://' + req.get('host') + '/api/' + path;
+        const url = req.protocol + '://' + req.get('host') + '/' + path;
         return url;
     }
     if (req.files) {
@@ -14,7 +14,7 @@ const filePath2FullURL = (req: Request) => {
             const file = files[key][0] as Express.Multer.File;
             const path = file.path.replaceAll('\\', '/');
             if (path === undefined) return null;
-            const url = req.protocol + '://' + req.get('host') + '/api/' + path;
+            const url = req.protocol + '://' + req.get('host') + '/' + path;
             results[file.fieldname] = url;
         }
         return results;
