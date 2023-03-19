@@ -1,7 +1,7 @@
 import { sendResponse } from '../utils/response';
 import { ApplicationError } from '../errors/applicationError';
 import { CommonError } from '../errors/common';
-import { userService } from '../services';
+import { authService, userService } from '../services';
 import filePath2FullURL from '../utils/filePath2FullURL';
 
 import { Request, Response, NextFunction } from 'express';
@@ -85,6 +85,7 @@ const adminBanUser = async (req: Request, res: Response, next: NextFunction) => 
     try {
         const { userId } = req.body;
         const user = await userService.banUser(userId, true);
+        await authService.removeRefreshToken(userId);
         sendResponse(res, user, 200);
     } catch (error: any) {
         return next(error);

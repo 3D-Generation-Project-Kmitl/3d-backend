@@ -61,6 +61,12 @@ export const AuthError = {
         message: 'Access Token is not bearer',
         statusCode: 401,
     },
+    USER_BANNED: {
+        type: ApplicationError.errorType.APP_SERVICE,
+        code: 'USER_BANNED',
+        message: 'บัญชีผู้ใช้งานของคุณถูกระงับการใช้งาน',
+        statusCode: 403,
+    },
     USER_NOT_FOUND: {
         type: ApplicationError.errorType.APP_SERVICE,
         code: 'USER_NOT_FOUND',

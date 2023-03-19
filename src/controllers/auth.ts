@@ -88,6 +88,10 @@ const login = async (req: Request, res: Response, next: NextFunction) => {
             return next(new ApplicationError(CommonError.UNAUTHORIZED));
         }
 
+        if (userResult.isBan) {
+            return next(new ApplicationError(AuthError.USER_BANNED));
+        }
+
         const isPasswordValid = bcrypt.compareSync(password, userResult.password);
         if (!isPasswordValid) {
             return next(new ApplicationError(CommonError.UNAUTHORIZED));
