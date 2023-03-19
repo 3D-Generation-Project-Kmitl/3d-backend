@@ -1,5 +1,5 @@
 import prisma from '../utils/prisma';
-import { ModelType, Cart, Product, Model } from '@prisma/client';
+import { ModelType, Cart, Product, Model, ModelStatus } from '@prisma/client';
 
 type CartProduct = Cart & { Product: Product & { Model: Model } };
 
@@ -89,14 +89,15 @@ export const getModelsByCustomerId = async (userId: number) => {
     return modelResult;
 }
 
-export const updateModel = async (id: number, model: string, picture: string) => {
+export const updateModel = async (id: number, model: string, picture: string, status?: ModelStatus) => {
     const updateResult = await prisma.model.update({
         where: {
             modelId: id
         },
         data: {
             picture: picture,
-            model: model
+            model: model,
+            status: status
         }
     });
     return updateResult;

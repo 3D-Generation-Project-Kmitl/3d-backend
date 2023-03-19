@@ -84,7 +84,7 @@ const update = async (req: Request, res: Response, next: NextFunction) => {
 
 const updateModelFromReconstruction = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const { modelId, model, picture } = req.body;
+        const { modelId, model, picture, status } = req.body;
 
         const modelResult = await modelService.getModelById(modelId);
 
@@ -92,7 +92,7 @@ const updateModelFromReconstruction = async (req: Request, res: Response, next: 
             throw new ApplicationError(CommonError.RESOURCE_NOT_FOUND);
         }
 
-        const modelUpdated = await modelService.updateModel(modelId, model, picture);
+        const modelUpdated = await modelService.updateModel(modelId, model, picture, status);
 
         sendResponse(res, modelUpdated, 200);
     } catch (error) {

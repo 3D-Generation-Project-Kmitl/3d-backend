@@ -247,4 +247,5 @@ enum ModelType {
 enum ModelStatus {
   AVAILABLE
   DELETED
+  FAILED
 }
