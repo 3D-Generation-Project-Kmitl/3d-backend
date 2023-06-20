@@ -6,7 +6,13 @@
   "scripts": {
     "dev": "ts-node-dev --poll ./src/server.ts",
     "build": "rimraf ./dist && tsc",
-    "start": "npm run build && node ./dist/server.js"
+    "start": "node ./dist/server.js",
+    "start:pm2": "pm2-runtime start ecosystem.config.js",
+    "start:docker": "npm run build && node --inspect=0.0.0.0 dist/server.js",
+    "db:generate": "npx prisma generate",
+    "db:migrate": "npx prisma migrate deploy && npx prisma generate",
+    "db:migrate:docker": "docker compose run api npm run db:migrate",
+    "rebuild:be": "docker compose build api && docker compose rm --stop api && docker compose up -d api"
   },
   "repository": {
     "type": "git",
@@ -19,18 +25,33 @@
   },
   "homepage": "https://github.com/3D-Generation-Project-Kmitl/3d-backend#readme",
   "devDependencies": {
+    "@types/bcryptjs": "^2.4.2",
+    "@types/cookie-parser": "^1.4.3",
+    "@types/cors": "^2.8.12",
     "@types/express": "^4.17.13",
+    "@types/jsonwebtoken": "^8.5.9",
+    "@types/multer": "^1.4.7",
     "@types/node": "^18.7.9",
+    "@types/nodemailer": "^6.4.7",
+    "prisma": "^4.4.0",
     "rimraf": "^3.0.2",
     "ts-node-dev": "^2.0.0",
     "typescript": "^4.7.4"
   },
   "dependencies": {
-    "@types/cors": "^2.8.12",
-    "@types/pg": "^8.6.5",
+    "@prisma/client": "^4.4.0",
+    "bcryptjs": "^2.4.3",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.13.2",
+    "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
+    "dayjs": "^1.11.5",
     "dotenv": "^16.0.3",
     "express": "^4.18.1",
-    "pg": "^8.8.0"
+    "jsonwebtoken": "^8.5.1",
+    "multer": "^1.4.5-lts.1",
+    "nodemailer": "^6.8.0",
+    "stripe": "^11.6.0",
+    "winston": "^3.8.2"
   }
 }

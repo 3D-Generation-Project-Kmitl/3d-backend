@@ -1,21 +1,36 @@
 import express, { Application } from "express";
 import dotenv from 'dotenv';
 import cors from 'cors';
-
+import cookieParser from 'cookie-parser';
 import router from './routes';
+import logger from './utils/logger';
+import { errorHandler } from './middleware/error';
+
 
 dotenv.config();
 
-const app: Application = express();
-app.set('port', process.env.PORT || 8080);
+const server: Application = express();
 
-app.use(cors());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+server.use(cors({
+    origin: true,
+    credentials: true,
+}));
 
+server.set('port', process.env.PORT || 8080);
 
-app.use('/api', router);
+server.use('/api/payment/webhook', express.raw({ type: "*/*" }));
+server.use(express.json());
+server.use(cookieParser());
+server.use(express.urlencoded({ extended: true }));
+server.use('/api/uploads', express.static('uploads'));
 
-app.listen(app.get('port'), () => {
-    console.log(`Server is running on port ${app.get('port')}`);
+server.use('/api/health-check', (req, res) => {
+    res.send(`I'm up and running on v1.0.0`);
+});
+server.use('/api', router);
+
+server.use(errorHandler);
+
+server.listen(server.get('port'), () => {
+    logger.info(`Server is running on port ${server.get('port')}`);
 });

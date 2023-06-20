@@ -1,0 +1,14 @@
+export { default as userController } from './user';
+export { default as authController } from './auth';
+export { default as identityController } from './identity';
+export { default as productController } from './product';
+export { default as categoryController } from './category';
+export { default as modelController } from './model';
+export { default as cartController } from './cart';
+export { default as favoriteController } from './favorite';
+export { default as paymentController } from './payment';
+export { default as orderController } from './order';
+export { default as walletController } from './wallet';
+export { default as followController } from './follow';
+export { default as notificationController } from './notification';
+export { default as reportController } from './report';
