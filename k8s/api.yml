@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-deployment
+  labels:
+    app: api
+  namespace: api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: api
+  template:
+    metadata:
+      labels:
+        app: api
+    spec:
+      containers:
+      - name: api
+        image: pholpaphankorn/3d-backend:latest
+        ports:
+        - containerPort: 8080
+        env:
+        - name: DATABASE_URL
+          valueFrom: { secretKeyRef: { name: database-secret, key: postgresql } } 
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: api-service
+  namespace: api
+spec:
+  type: LoadBalancer
+  selector:
+    app: api
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
+
+
+
